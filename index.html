@@ -471,6 +471,150 @@
       margin-top: 2px;
     }
   }
+
+  /* 照片區塊樣式 */
+  .photo-line {
+    align-items: flex-start;
+  }
+  .photo-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .photo-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    object-fit: cover;
+    margin-left: 4px;
+  }
+  .photo-note {
+    font-size: 0.72rem;
+    color: #6b7280;
+  }
+  .photo-status {
+    font-size: 0.72rem;
+    margin-top: 2px;
+  }
+  .photo-status-ok {
+    color: #16a34a;
+  }
+  .photo-status-warn {
+    color: #f97316;
+  }
+  .photo-status-wait {
+    color: #0f766e;
+  }
+  .photo-line input[type="file"] {
+    font-size: 0.72rem;
+  }
+
+  /* 照片總覽 gallery */
+  .gallery-toggle-btn {
+    font-size: 0.8rem;
+    padding: 5px 8px;
+    border-radius: 999px;
+    border: 1px dashed #0f766e;
+    background: #ecfeff;
+    color: #0f766e;
+  }
+  .gallery-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.75);
+    backdrop-filter: blur(10px);
+    z-index: 40;
+    display: none;
+    flex-direction: column;
+    padding: 10px;
+  }
+  .gallery-overlay.active {
+    display: flex;
+  }
+  .gallery-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    color: #f9fafb;
+  }
+  .gallery-header-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .gallery-close-btn {
+    margin-left: auto;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.8);
+    background: transparent;
+    color: #e5e7eb;
+    font-size: 0.8rem;
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    overflow-y: auto;
+  }
+  .gallery-item {
+    background: #0b1120;
+    border-radius: 10px;
+    padding: 4px;
+    border: 1px solid rgba(148,163,184,0.5);
+  }
+  .gallery-thumb {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 2px;
+  }
+  .gallery-caption {
+    font-size: 0.68rem;
+    color: #e5e7eb;
+    line-height: 1.2;
+  }
+
+  /* 大圖 Lightbox */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 10px;
+  }
+  .lightbox.active {
+    display: flex;
+  }
+  .lightbox-img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  }
+
+  /* 關帳模式：鎖定 item-card 內的輸入與按鈕 */
+  .app.closed-mode .item-card input,
+  .app.closed-mode .item-card select,
+  .app.closed-mode .item-card textarea,
+  .app.closed-mode .item-card button {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .app.closed-mode .item-card .photo-preview {
+    pointer-events: none;
+  }
+
+  /* 關帳提示 */
+  #closeNote {
+    margin-top: 4px;
+  }
 </style>
 
 </head>
@@ -479,6 +623,7 @@
   <div class="app">
     <h1>南海豐 包裝耗材領用（極簡手機版）</h1>
     <div class="sub">多年份 · 單機使用 · 資料保存在瀏覽器（localStorage），適合現場用手機紀錄。</div>
+    <div id="closeNote" class="info"></div>
 
     <div class="row">
       <span>📆 年月：</span>
@@ -512,6 +657,8 @@
       <button onclick="showTodayOnly()">📅 只看今天</button>
       <button onclick="showAllDays()">🗓 顯示全部日期</button>
       <button class="danger" onclick="clearData()">🧹 清除本月暫存</button>
+      <button class="gallery-toggle-btn" onclick="openGallery()">📷 照片總覽</button>
+      <button id="closeBtn" onclick="toggleCloseMonth()">🔒 本月關帳</button>
     </div>
 
     <div class="summary">
@@ -547,6 +694,22 @@
       </table>
     </div>
 
+
+    <!-- 照片總覽 overlay -->
+    <div class="gallery-overlay" id="galleryOverlay">
+      <div class="gallery-header">
+        <div class="gallery-header-title">📷 耗材照片總覽</div>
+        <input id="gallerySearch" type="text" placeholder="搜尋品項 / 品名 / 廠商" style="flex:1; max-width:210px; padding:4px 8px; border-radius:999px; border:1px solid #cbd5f5; font-size:0.75rem;">
+        <button class="gallery-close-btn" onclick="closeGallery()">關閉</button>
+      </div>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+
+    <!-- 大圖 Lightbox -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+      <img id="lightboxImg" class="lightbox-img" src="" alt="耗材照片預覽">
+    </div>
+
     <div class="items" id="itemsContainer"></div>
   </div>
 
@@ -560,6 +723,8 @@
     let filteredIndices = [];
     let currentDayFilter = null;
     let rankingVisible = false;
+    let unsubscribeRealtime = null;
+    let monthClosed = false;
 
     function adYear(rocYear) {
       return rocYear + 1911;
@@ -583,7 +748,136 @@
       return Math.round(num).toLocaleString("zh-TW");
     }
 
-    function ensureDailyArray(item) {
+    
+    // 壓縮圖片：限制寬高與容量，完成後回傳 dataURL 與 Blob
+    function compressImage(file, maxWidth, maxHeight, maxSizeKB, callback) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          let width = img.width;
+          let height = img.height;
+          const ratio = Math.min(maxWidth / width, maxHeight / height, 1);
+          width = width * ratio;
+          height = height * ratio;
+
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          let quality = 0.9;
+          function tryExport() {
+            canvas.toBlob(
+              function (blob) {
+                if (!blob) {
+                  alert("圖片壓縮失敗，請換一張照片。");
+                  return;
+                }
+                const sizeKB = blob.size / 1024;
+                if (sizeKB > maxSizeKB && quality > 0.3) {
+                  quality -= 0.1;
+                  tryExport();
+                } else if (sizeKB > maxSizeKB) {
+                  alert("圖片仍超過限制大小（" + maxSizeKB + "KB），請拍小一點或先縮圖。");
+                } else {
+                  const reader2 = new FileReader();
+                  reader2.onload = function (ev) {
+                    callback(ev.target.result, blob); // dataURL 與 Blob
+                  };
+                  reader2.readAsDataURL(blob);
+                }
+              },
+              "image/jpeg",
+              quality
+            );
+          }
+          tryExport();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // 開啟大圖 Lightbox
+    function openLightbox(src) {
+      const lb = document.getElementById("lightbox");
+      const img = document.getElementById("lightboxImg");
+      img.src = src;
+      lb.classList.add("active");
+    }
+    function closeLightbox() {
+      const lb = document.getElementById("lightbox");
+      lb.classList.remove("active");
+    }
+
+    // 照片總覽：開啟、關閉與渲染
+    function openGallery() {
+      const overlay = document.getElementById("galleryOverlay");
+      overlay.classList.add("active");
+      const search = document.getElementById("gallerySearch");
+      if (search) search.value = "";
+      renderGallery();
+    }
+
+    function closeGallery() {
+      const overlay = document.getElementById("galleryOverlay");
+      overlay.classList.remove("active");
+    }
+
+    function renderGallery() {
+      const grid = document.getElementById("galleryGrid");
+      if (!grid) return;
+      const searchEl = document.getElementById("gallerySearch");
+      const kw = (searchEl && searchEl.value ? searchEl.value : "").toLowerCase().trim();
+      grid.innerHTML = "";
+      const indices = items.map((_, i) => i);
+      indices.forEach((idx) => {
+        const item = items[idx];
+        if (!item || !item.photoUrl) return;
+        const fields = [
+          item.category || "",
+          item.name || "",
+          item.supplier || "",
+          item.usageType || "",
+          item.spec || ""
+        ].join(" ").toLowerCase();
+        if (kw && !fields.includes(kw)) return;
+
+        const div = document.createElement("div");
+        div.className = "gallery-item";
+
+        const img = document.createElement("img");
+        img.className = "gallery-thumb";
+        img.src = item.photoUrl;
+        img.onclick = () => openLightbox(item.photoUrl);
+        div.appendChild(img);
+
+        const cap = document.createElement("div");
+        cap.className = "gallery-caption";
+        cap.textContent = (item.category || "未填品項") + "｜" + (item.name || "") + (item.supplier ? ("｜" + item.supplier) : "");
+        div.appendChild(cap);
+
+        grid.appendChild(div);
+      });
+    }
+
+    // 取得單一品項本月總領用數量
+    function getItemTotalUsage(item) {
+      if (!item) return 0;
+      ensureDailyArray(item);
+      const DAYS = getDaysInCurrentMonth();
+      let sum = 0;
+      for (let d = 0; d < DAYS; d++) {
+        const v = item.daily[d];
+        if (v != null && !isNaN(v)) {
+          sum += parseFloat(v);
+        }
+      }
+      return sum;
+    }
+function ensureDailyArray(item) {
       const DAYS = getDaysInCurrentMonth();
       if (!Array.isArray(item.daily)) {
         item.daily = Array(DAYS).fill(null);
@@ -731,6 +1025,130 @@
 
         card.appendChild(header);
 
+        nameInput.style.flex = "1";
+        nameInput.onchange = (e) => { item.name = e.target.value; };
+        header.appendChild(nameInput);
+
+        card.appendChild(header);
+
+        // 照片區：上傳＋預覽＋狀態
+        const photoLine = document.createElement("div");
+        photoLine.className = "line photo-line";
+
+        const photoLabel = document.createElement("label");
+        photoLabel.textContent = "照片";
+        photoLine.appendChild(photoLabel);
+
+        const photoWrapper = document.createElement("div");
+        photoWrapper.className = "photo-actions";
+
+        const img = document.createElement("img");
+        img.className = "photo-preview";
+        if (item.photoUrl) {
+          img.src = item.photoUrl;
+        } else {
+          img.style.display = "none";
+        }
+        img.onclick = () => {
+          if (item.photoUrl) openLightbox(item.photoUrl);
+        };
+        photoWrapper.appendChild(img);
+
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "image/*";
+        fileInput.capture = "environment";
+
+        const statusDiv = document.createElement("div");
+        statusDiv.className = "photo-status";
+        if (item.photoUrl) {
+          statusDiv.textContent = "✅ 已有照片";
+          statusDiv.classList.add("photo-status-ok");
+        } else {
+          statusDiv.textContent = "尚未上傳照片";
+        }
+
+        fileInput.onchange = (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const maxRawSizeMB = 5;
+          if (file.size > maxRawSizeMB * 1024 * 1024) {
+            alert("原始照片超過 " + maxRawSizeMB + "MB，請拍小一點再上傳。");
+            e.target.value = "";
+            return;
+          }
+
+          statusDiv.textContent = "壓縮中…";
+          statusDiv.classList.remove("photo-status-ok", "photo-status-warn");
+          statusDiv.classList.add("photo-status-wait");
+
+          // 壓縮後再上傳（或暫存）
+          compressImage(file, 800, 800, 200, function (dataUrl, blob) {
+            if (typeof uploadPhotoToStorage === "function") {
+              statusDiv.textContent = "上傳雲端中…";
+              const path = "consumables_photos/" + currentYear + "_" + currentMonth + "_" + realIdx + ".jpg";
+              uploadPhotoToStorage(blob, path)
+                .then((url) => {
+                  item.photoUrl = url;
+                  img.src = url;
+                  img.style.display = "block";
+                  statusDiv.textContent = "✅ 雲端已儲存";
+                  statusDiv.classList.remove("photo-status-wait", "photo-status-warn");
+                  statusDiv.classList.add("photo-status-ok");
+                  renderGallery();
+                })
+                .catch((err) => {
+                  console.error(err);
+                  item.photoUrl = dataUrl;
+                  img.src = dataUrl;
+                  img.style.display = "block";
+                  statusDiv.textContent = "⚠ 僅儲存在本機，雲端上傳失敗";
+                  statusDiv.classList.remove("photo-status-wait", "photo-status-ok");
+                  statusDiv.classList.add("photo-status-warn");
+                  renderGallery();
+                  alert("上傳雲端失敗，暫時改為本機顯示。");
+                });
+            } else {
+              item.photoUrl = dataUrl;
+              img.src = dataUrl;
+              img.style.display = "block";
+              statusDiv.textContent = "⚠ 僅儲存在本機（未連線雲端）";
+              statusDiv.classList.remove("photo-status-wait", "photo-status-ok");
+              statusDiv.classList.add("photo-status-warn");
+              renderGallery();
+            }
+          });
+        };
+        photoWrapper.appendChild(fileInput);
+
+        const clearPhotoBtn = document.createElement("button");
+        clearPhotoBtn.type = "button";
+        clearPhotoBtn.textContent = "清除照片";
+        clearPhotoBtn.className = "danger";
+        clearPhotoBtn.onclick = () => {
+          if (!item.photoUrl) return;
+          if (confirm("要刪除這個耗材的照片嗎？（不會刪除雲端檔案，只會清除連結）")) {
+            item.photoUrl = null;
+            img.src = "";
+            img.style.display = "none";
+            statusDiv.textContent = "尚未上傳照片";
+            statusDiv.classList.remove("photo-status-ok", "photo-status-warn", "photo-status-wait");
+            renderGallery();
+          }
+        };
+        photoWrapper.appendChild(clearPhotoBtn);
+
+        photoWrapper.appendChild(statusDiv);
+
+        const photoNote = document.createElement("div");
+        photoNote.className = "photo-note";
+        photoNote.textContent = "可用手機拍耗材外觀，照片會壓縮後上傳（或只存在本機），欄位僅存連結。";
+        photoWrapper.appendChild(photoNote);
+
+        photoLine.appendChild(photoWrapper);
+        card.appendChild(photoLine);
+
         const line1 = document.createElement("div");
         line1.className = "line";
 
@@ -803,6 +1221,74 @@
         line3.appendChild(noteInput);
 
         card.appendChild(line3);
+
+        // 庫存：期初 / 期末盤點＋理論結存與差異
+        const stockLine = document.createElement("div");
+        stockLine.className = "line";
+        const stockLabel = document.createElement("label");
+        stockLabel.textContent = "庫存";
+        stockLine.appendChild(stockLabel);
+
+        const stockWrapper = document.createElement("div");
+        stockWrapper.style.display = "flex";
+        stockWrapper.style.flexDirection = "column";
+        stockWrapper.style.gap = "4px";
+
+        const stockRow = document.createElement("div");
+        stockRow.style.display = "flex";
+        stockRow.style.flexWrap = "wrap";
+        stockRow.style.gap = "4px";
+
+        const openingInput = document.createElement("input");
+        openingInput.type = "number";
+        openingInput.placeholder = "期初";
+        openingInput.style.maxWidth = "90px";
+        openingInput.value = item.openingQty == null ? "" : item.openingQty;
+        const closingInput = document.createElement("input");
+        closingInput.type = "number";
+        closingInput.placeholder = "期末盤點";
+        closingInput.style.maxWidth = "110px";
+        closingInput.value = item.closingQty == null ? "" : item.closingQty;
+
+        const stockInfo = document.createElement("div");
+        stockInfo.className = "photo-note";
+
+        function refreshStockInfo() {
+          const openVal = openingInput.value.trim();
+          const closeVal = closingInput.value.trim();
+          const opening = openVal === "" ? 0 : (parseFloat(openVal) || 0);
+          const used = getItemTotalUsage(item);
+          const theoreticalEnd = opening - used;
+
+          if (closeVal === "") {
+            stockInfo.textContent = "理論結存（期初－本月領用）：" + theoreticalEnd + "（尚未輸入盤點量）";
+          } else {
+            const closing = parseFloat(closeVal) || 0;
+            const diff = closing - theoreticalEnd;
+            stockInfo.textContent = "理論結存：" + theoreticalEnd + "｜盤點：" + closing + "｜差異：" + diff;
+          }
+        }
+
+        openingInput.onchange = (e) => {
+          const v = e.target.value.trim();
+          item.openingQty = v === "" ? null : parseFloat(v);
+          refreshStockInfo();
+        };
+        closingInput.onchange = (e) => {
+          const v = e.target.value.trim();
+          item.closingQty = v === "" ? null : parseFloat(v);
+          refreshStockInfo();
+        };
+
+        stockRow.appendChild(openingInput);
+        stockRow.appendChild(closingInput);
+        stockWrapper.appendChild(stockRow);
+        stockWrapper.appendChild(stockInfo);
+
+        stockLine.appendChild(stockWrapper);
+        card.appendChild(stockLine);
+
+        refreshStockInfo();
 
         const daysDiv = document.createElement("div");
         daysDiv.className = "days";
@@ -898,7 +1384,10 @@
         unitPrice: null,
         daily: Array(DAYS).fill(null),
         usageType: "",
-        note: ""
+        note: "",
+        openingQty: null,
+        closingQty: null,
+        photoUrl: null
       };
       items.push(newItem);
       const kw = document.getElementById("searchInput").value.trim();
@@ -909,9 +1398,28 @@
     function saveData() {
       try {
         localStorage.setItem(storageKeyForCurrent(), JSON.stringify(items));
-        alert("已儲存 " + currentYear + "/" + currentMonth + " 的資料（僅保存在本機）。");
       } catch (e) {
         alert("儲存失敗：" + e.message);
+        return;
+      }
+
+      // 同步到 Firestore（若可用）
+      if (typeof db !== "undefined" && db) {
+        const docId = "R" + currentYear + "_M" + currentMonth;
+        db.collection("consumablesMonths").doc(docId).set({
+          rocYear: currentYear,
+          month: currentMonth,
+          items: items,
+          closed: monthClosed,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true }).then(() => {
+          alert("已儲存 " + currentYear + "/" + currentMonth + " 的資料，並同步到雲端。");
+        }).catch((err) => {
+          console.error("Firestore 同步失敗", err);
+          alert("已儲存在本機，但雲端同步失敗：" + err.message);
+        });
+      } else {
+        alert("已儲存 " + currentYear + "/" + currentMonth + " 的資料（僅保存在本機）。");
       }
     }
 
@@ -1040,7 +1548,10 @@
           unitPrice: src.unitPrice,
           daily: Array(DAYS).fill(null),
           usageType: src.usageType,
-          note: src.note
+          note: src.note,
+          openingQty: src.openingQty || null,
+          closingQty: src.closingQty || null,
+          photoUrl: src.photoUrl || null
         };
       });
     }
@@ -1053,29 +1564,111 @@
       filteredIndices = [];
       document.getElementById("searchInput").value = "";
 
+      // 清除上一個月的即時監聽
+      if (unsubscribeRealtime) {
+        unsubscribeRealtime();
+        unsubscribeRealtime = null;
+      }
+      monthClosed = false;
+      updateCloseUI();
+
+      // 先從本機載入暫存（若有）
+      let hasLocal = false;
       if (!forceReset) {
         const saved = localStorage.getItem(storageKeyForCurrent());
         if (saved) {
           try {
             items = JSON.parse(saved);
+            hasLocal = true;
             renderItems();
-            return;
           } catch (e) {
             console.warn("解析已存資料失敗，改用預設：", e);
           }
         }
       }
 
-      if (currentYear === 114 && currentMonth === 11) {
-        items = JSON.parse(JSON.stringify(TEMPLATE_ITEMS));
-        items.forEach(it => ensureDailyArray(it));
+      const applyTemplateIfNeeded = () => {
+        if (!hasLocal && (!items || !items.length)) {
+          if (currentYear === 114 && currentMonth === 11) {
+            items = JSON.parse(JSON.stringify(TEMPLATE_ITEMS));
+            items.forEach(it => ensureDailyArray(it));
+          } else {
+            items = cloneTemplateForMonth();
+          }
+          monthClosed = false;
+          renderItems();
+          updateCloseUI();
+        }
+      };
+
+      // 若有 Firestore，啟用即時監聽
+      if (typeof db !== "undefined" && db) {
+        const docId = "R" + currentYear + "_M" + currentMonth;
+        const docRef = db.collection("consumablesMonths").doc(docId);
+        unsubscribeRealtime = docRef.onSnapshot((doc) => {
+          if (doc.exists) {
+            const data = doc.data();
+            if (Array.isArray(data.items)) {
+              items = data.items;
+            }
+            monthClosed = !!data.closed;
+            renderItems();
+            updateGrandTotal();
+            updateRanking();
+            updateCloseUI();
+          } else {
+            applyTemplateIfNeeded();
+          }
+        }, (err) => {
+          console.error("Firestore 監聽錯誤", err);
+          applyTemplateIfNeeded();
+        });
       } else {
-        items = cloneTemplateForMonth();
+        applyTemplateIfNeeded();
       }
-      renderItems();
     }
 
-    function onYearMonthChange() {
+    
+    function updateCloseUI() {
+      const app = document.querySelector(".app");
+      const btn = document.getElementById("closeBtn");
+      const note = document.getElementById("closeNote");
+      if (!app || !btn || !note) return;
+      if (monthClosed) {
+        app.classList.add("closed-mode");
+        btn.textContent = "🔓 解除關帳";
+        btn.classList.add("danger");
+        note.textContent = "本月已關帳：耗材資料鎖定不可編輯，如需修改請先「解除關帳」。";
+      } else {
+        app.classList.remove("closed-mode");
+        btn.textContent = "🔒 本月關帳";
+        btn.classList.remove("danger");
+        note.textContent = "提示：先輸入期初庫存，月底填寫盤點量，確認無誤後可按「本月關帳」鎖定資料。";
+      }
+    }
+
+    function toggleCloseMonth() {
+      if (!monthClosed) {
+        if (!confirm("確定要關帳？關帳後本月耗材資料將鎖定不可編輯（之後仍可解除關帳）。")) return;
+        monthClosed = true;
+      } else {
+        if (!confirm("確定要解除關帳？解除後本月資料可再次修改。")) return;
+        monthClosed = false;
+      }
+      updateCloseUI();
+
+      // 僅同步關帳狀態到 Firestore（若可用）
+      if (typeof db !== "undefined" && db) {
+        const docId = "R" + currentYear + "_M" + currentMonth;
+        db.collection("consumablesMonths").doc(docId).set({
+          closed: monthClosed
+        }, { merge: true }).catch((err) => {
+          console.error("更新關帳狀態失敗", err);
+        });
+      }
+    }
+
+function onYearMonthChange() {
       const ySel = document.getElementById("yearSelect");
       const mSel = document.getElementById("monthSelect");
       const rocY = parseInt(ySel.value, 10);
@@ -1087,6 +1680,15 @@
       document.getElementById("yearSelect").value = "114";
       document.getElementById("monthSelect").value = "11";
       loadYearMonth(114, 11, false);
+
+      const gallerySearch = document.getElementById("gallerySearch");
+      if (gallerySearch) {
+        gallerySearch.addEventListener("input", () => {
+          renderGallery();
+        });
+      }
+
+      updateCloseUI();
     });
   </script>
 
@@ -1094,6 +1696,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 
 <script>
   const firebaseConfig = {
@@ -1109,6 +1712,13 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
   const analytics = firebase.analytics();
+  const storage = firebase.storage();
+
+  async function uploadPhotoToStorage(blob, path) {
+    const storageRef = storage.ref().child(path);
+    await storageRef.put(blob);
+    return await storageRef.getDownloadURL();
+  }
 </script>
 
 </body>
