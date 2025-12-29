@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>南海豐｜包裝耗材領用（極簡手機版）</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+
 <style>
   :root {
     --nhf-bg: #f3f4f6;
@@ -12,38 +12,29 @@
     --nhf-border: #e5e7eb;
     --nhf-text: #111827;
     --nhf-muted: #6b7280;
-    --nhf-primary: #0f766e;      /* 海藍綠 */
-    --nhf-primary-soft: #ccfbf1; /* 淺藍綠底 */
+    --nhf-primary: #0f766e;
+    --nhf-primary-soft: #ccfbf1;
     --nhf-danger: #b91c1c;
-    --nhf-accent: #f97316;       /* 一點暖色提神 */
+    --nhf-accent: #f97316;
   }
-
-  * {
-    box-sizing: border-box;
-  }
-
+  * { box-sizing: border-box; }
   body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", system-ui, sans-serif;
     background: radial-gradient(circle at top, #e5f3ff 0, #f3f4f6 45%, #e5e7eb 100%);
     color: var(--nhf-text);
   }
-
-  /* 頂端品牌色條 */
   .top-bar {
     height: 4px;
     width: 100%;
     background: linear-gradient(90deg, #0f766e, #14b8a6, #f97316);
     box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
   }
-
   .app {
     max-width: 960px;
     margin: 0 auto;
     padding: 12px 10px 16px;
   }
-
-  /* ---------- 頂部標題區 ---------- */
   h1 {
     font-size: 1.05rem;
     margin: 0;
@@ -54,7 +45,6 @@
     align-items: center;
     gap: 6px;
   }
-
   h1::before {
     content: "📦";
     display: inline-flex;
@@ -67,15 +57,12 @@
     color: #ecfeff;
     font-size: 0.8rem;
   }
-
   .sub {
     font-size: 0.78rem;
     color: var(--nhf-muted);
     margin-top: 4px;
     margin-bottom: 10px;
   }
-
-  /* ---------- 年月列 ---------- */
   .row {
     display: flex;
     flex-wrap: wrap;
@@ -89,21 +76,8 @@
     border: 1px solid rgba(148, 163, 184, 0.4);
     box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
   }
-
-  .row span:first-child {
-    font-weight: 600;
-    color: #0f172a;
-  }
-
-  select,
-  button,
-  input[type="text"],
-  input[type="number"],
-  textarea {
-    font-family: inherit;
-    font-size: 0.8rem;
-  }
-
+  .row span:first-child { font-weight: 600; color: #0f172a; }
+  select, button, input[type="text"], input[type="number"], textarea { font-family: inherit; font-size: 0.8rem; }
   select {
     padding: 4px 8px;
     border-radius: 999px;
@@ -111,20 +85,12 @@
     background: #f9fafb;
     outline: none;
   }
-
   select:focus {
     border-color: #0f766e;
     box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.35);
     background: #ffffff;
   }
-
-  #monthInfo {
-    font-size: 0.8rem;
-    color: var(--nhf-muted);
-    margin-left: auto;
-  }
-
-  /* ---------- 工具列（做成小工具條、微浮起） ---------- */
+  #monthInfo { font-size: 0.8rem; color: var(--nhf-muted); margin-left: auto; }
   .toolbar {
     position: sticky;
     top: 0;
@@ -140,7 +106,6 @@
     border: 1px solid rgba(148, 163, 184, 0.5);
     box-shadow: 0 10px 20px rgba(15, 23, 42, 0.12);
   }
-
   button {
     padding: 6px 11px;
     border-radius: 999px;
@@ -154,40 +119,17 @@
     white-space: nowrap;
     transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.08s ease, border-color 0.08s ease;
   }
-
-  button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 12px rgba(15, 23, 42, 0.12);
-    background: #f9fafb;
-  }
-
-  button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.18);
-  }
-
+  button:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(15, 23, 42, 0.12); background: #f9fafb; }
+  button:active { transform: translateY(0); box-shadow: 0 2px 4px rgba(15, 23, 42, 0.18); }
   button.primary {
     background: linear-gradient(135deg, var(--nhf-primary), #14b8a6);
     color: #ecfeff;
     border-color: #0f766e;
     box-shadow: 0 6px 14px rgba(15, 118, 110, 0.4);
   }
-
-  button.primary:hover {
-    background: linear-gradient(135deg, #0d9488, #22c55e);
-  }
-
-  button.danger {
-    background: #fef2f2;
-    color: var(--nhf-danger);
-    border-color: #fecaca;
-  }
-
-  button.danger:hover {
-    background: #fee2e2;
-  }
-
-  /* ---------- 摘要區 ---------- */
+  button.primary:hover { background: linear-gradient(135deg, #0d9488, #22c55e); }
+  button.danger { background: #fef2f2; color: var(--nhf-danger); border-color: #fecaca; }
+  button.danger:hover { background: #fee2e2; }
   .summary {
     font-size: 0.8rem;
     margin-bottom: 8px;
@@ -198,13 +140,7 @@
     display: grid;
     row-gap: 2px;
   }
-
-  .summary strong {
-    color: var(--nhf-accent);
-    font-weight: 700;
-  }
-
-  /* ---------- 搜尋列 ---------- */
+  .summary strong { color: var(--nhf-accent); font-weight: 700; }
   .search-box {
     display: flex;
     flex-wrap: wrap;
@@ -217,12 +153,7 @@
     background: #f9fafb;
     border: 1px solid #e5e7eb;
   }
-
-  .search-box span {
-    color: #0f172a;
-    font-weight: 500;
-  }
-
+  .search-box span { color: #0f172a; font-weight: 500; }
   .search-box input {
     flex: 1;
     min-width: 120px;
@@ -232,22 +163,9 @@
     background: #ffffff;
     outline: none;
   }
-
-  .search-box input:focus {
-    border-color: #0f766e;
-    box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.3);
-  }
-
-  .info {
-    font-size: 0.72rem;
-    color: var(--nhf-muted);
-    margin: 4px 2px 6px;
-  }
-
-  .ranking-toggle-row {
-    margin-bottom: 6px;
-  }
-
+  .search-box input:focus { border-color: #0f766e; box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.3); }
+  .info { font-size: 0.72rem; color: var(--nhf-muted); margin: 4px 2px 6px; }
+  .ranking-toggle-row { margin-bottom: 6px; }
   .ranking-section {
     display: none;
     padding: 8px 10px;
@@ -257,41 +175,11 @@
     margin-bottom: 10px;
     box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
   }
-
-  .ranking-section > div {
-    font-size: 0.78rem;
-    margin-bottom: 6px;
-    font-weight: 500;
-    color: #0f172a;
-  }
-
-  .ranking-section table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.72rem;
-  }
-
-  .ranking-section th,
-  .ranking-section td {
-    border-bottom: 1px solid #e5e7eb;
-    padding: 4px 4px;
-    text-align: left;
-    white-space: nowrap;
-  }
-
-  .ranking-section th {
-    font-weight: 600;
-    color: #4b5563;
-  }
-
-  .items {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 6px;
-  }
-
-  /* ---------- 單一品項卡片 ---------- */
+  .ranking-section > div { font-size: 0.78rem; margin-bottom: 6px; font-weight: 500; color: #0f172a; }
+  .ranking-section table { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
+  .ranking-section th, .ranking-section td { border-bottom: 1px solid #e5e7eb; padding: 4px 4px; text-align: left; white-space: nowrap; }
+  .ranking-section th { font-weight: 600; color: #4b5563; }
+  .items { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
   .item-card {
     background: var(--nhf-card);
     border-radius: 14px;
@@ -300,24 +188,8 @@
     font-size: 0.8rem;
     box-shadow: 0 10px 22px rgba(15, 23, 42, 0.09);
   }
-
-  .item-header {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    align-items: center;
-    margin-bottom: 6px;
-  }
-
-  .index-badge {
-    font-size: 0.72rem;
-    padding: 2px 6px;
-    border-radius: 999px;
-    background: #e5e7eb;
-    color: #374151;
-    font-weight: 600;
-  }
-
+  .item-header { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin-bottom: 6px; }
+  .index-badge { font-size: 0.72rem; padding: 2px 6px; border-radius: 999px; background: #e5e7eb; color: #374151; font-weight: 600; }
   .item-header input[type="text"] {
     padding: 4px 6px;
     border-radius: 999px;
@@ -326,35 +198,11 @@
     min-width: 70px;
     outline: none;
   }
-
-  .item-header input[type="text"]:focus {
-    border-color: #0f766e;
-    background: #ffffff;
-    box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.25);
-  }
-
-  .item-header input[type="text"]:last-child {
-    flex: 1;
-  }
-
-  .line {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-bottom: 4px;
-    align-items: center;
-  }
-
-  .line label {
-    font-size: 0.72rem;
-    color: #4b5563;
-    padding: 2px 4px;
-    border-radius: 999px;
-    background: #f3f4f6;
-  }
-
-  .line input[type="text"],
-  .line input[type="number"] {
+  .item-header input[type="text"]:focus { border-color: #0f766e; background: #ffffff; box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.25); }
+  .item-header input[type="text"]:last-child { flex: 1; }
+  .line { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; align-items: center; }
+  .line label { font-size: 0.72rem; color: #4b5563; padding: 2px 4px; border-radius: 999px; background: #f3f4f6; }
+  .line input[type="text"], .line input[type="number"] {
     padding: 3px 6px;
     min-width: 60px;
     border-radius: 8px;
@@ -362,14 +210,7 @@
     background: #f9fafb;
     outline: none;
   }
-
-  .line input[type="text"]:focus,
-  .line input[type="number"]:focus {
-    border-color: #0f766e;
-    background: #ffffff;
-    box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.25);
-  }
-
+  .line input[type="text"]:focus, .line input[type="number"]:focus { border-color: #0f766e; background: #ffffff; box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.25); }
   textarea {
     width: 100%;
     padding: 4px 6px;
@@ -381,33 +222,10 @@
     font-size: 0.78rem;
     outline: none;
   }
-
-  textarea:focus {
-    border-color: #0f766e;
-    background: #ffffff;
-    box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.22);
-  }
-
-  /* ---------- 每日用量區 ---------- */
-  .days {
-    margin-top: 6px;
-    border-top: 1px dashed #e5e7eb;
-    padding-top: 6px;
-  }
-
-  .days-title {
-    font-size: 0.75rem;
-    color: #4b5563;
-    margin-bottom: 4px;
-    font-weight: 500;
-  }
-
-  .days-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
-    gap: 4px;
-  }
-
+  textarea:focus { border-color: #0f766e; background: #ffffff; box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.22); }
+  .days { margin-top: 6px; border-top: 1px dashed #e5e7eb; padding-top: 6px; }
+  .days-title { font-size: 0.75rem; color: #4b5563; margin-bottom: 4px; font-weight: 500; }
+  .days-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 4px; }
   .day-cell {
     display: flex;
     flex-direction: column;
@@ -417,12 +235,7 @@
     background: #f9fafb;
     border: 1px solid #e5e7eb;
   }
-
-  .day-cell span {
-    color: #4b5563;
-    margin-bottom: 2px;
-  }
-
+  .day-cell span { color: #4b5563; margin-bottom: 2px; }
   .day-cell input {
     padding: 3px 4px;
     border-radius: 6px;
@@ -430,95 +243,25 @@
     background: #ffffff;
     outline: none;
   }
-
-  .day-cell input:focus {
-    border-color: #0f766e;
-    box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.2);
-  }
-
-  .item-footer {
-    margin-top: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.75rem;
-    padding-top: 4px;
-  }
-
-  .item-footer strong {
-    color: var(--nhf-accent);
-  }
-
-  .item-footer button.danger {
-    font-size: 0.72rem;
-    padding-inline: 10px;
-  }
-
-  /* ---------- RWD ---------- */
+  .day-cell input:focus { border-color: #0f766e; box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.2); }
+  .item-footer { margin-top: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; padding-top: 4px; }
+  .item-footer strong { color: var(--nhf-accent); }
+  .item-footer button.danger { font-size: 0.72rem; padding-inline: 10px; }
   @media (max-width: 640px) {
-    .app {
-      padding-inline: 8px;
-    }
-
-    .toolbar {
-      top: 0;
-      padding-inline: 8px;
-    }
-
-    #monthInfo {
-      width: 100%;
-      margin-left: 0;
-      margin-top: 2px;
-    }
+    .app { padding-inline: 8px; }
+    .toolbar { top: 0; padding-inline: 8px; }
+    #monthInfo { width: 100%; margin-left: 0; margin-top: 2px; }
   }
-
-  /* 照片區塊樣式 */
-  .photo-line {
-    align-items: flex-start;
-  }
-  .photo-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .photo-preview {
-    width: 80px;
-    height: 80px;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
-    object-fit: cover;
-    margin-left: 4px;
-  }
-  .photo-note {
-    font-size: 0.72rem;
-    color: #6b7280;
-  }
-  .photo-status {
-    font-size: 0.72rem;
-    margin-top: 2px;
-  }
-  .photo-status-ok {
-    color: #16a34a;
-  }
-  .photo-status-warn {
-    color: #f97316;
-  }
-  .photo-status-wait {
-    color: #0f766e;
-  }
-  .photo-line input[type="file"] {
-    font-size: 0.72rem;
-  }
-
-  /* 照片總覽 gallery */
-  .gallery-toggle-btn {
-    font-size: 0.8rem;
-    padding: 5px 8px;
-    border-radius: 999px;
-    border: 1px dashed #0f766e;
-    background: #ecfeff;
-    color: #0f766e;
-  }
+  .photo-line { align-items: flex-start; }
+  .photo-actions { display: flex; flex-direction: column; gap: 4px; }
+  .photo-preview { width: 80px; height: 80px; border-radius: 8px; border: 1px solid #e5e7eb; object-fit: cover; margin-left: 4px; }
+  .photo-note { font-size: 0.72rem; color: #6b7280; }
+  .photo-status { font-size: 0.72rem; margin-top: 2px; }
+  .photo-status-ok { color: #16a34a; }
+  .photo-status-warn { color: #f97316; }
+  .photo-status-wait { color: #0f766e; }
+  .photo-line input[type="file"] { font-size: 0.72rem; }
+  .gallery-toggle-btn { font-size: 0.8rem; padding: 5px 8px; border-radius: 999px; border: 1px dashed #0f766e; background: #ecfeff; color: #0f766e; }
   .gallery-overlay {
     position: fixed;
     inset: 0;
@@ -529,20 +272,9 @@
     flex-direction: column;
     padding: 10px;
   }
-  .gallery-overlay.active {
-    display: flex;
-  }
-  .gallery-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-    color: #f9fafb;
-  }
-  .gallery-header-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
+  .gallery-overlay.active { display: flex; }
+  .gallery-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #f9fafb; }
+  .gallery-header-title { font-size: 0.9rem; font-weight: 600; }
   .gallery-close-btn {
     margin-left: auto;
     padding: 4px 8px;
@@ -552,71 +284,20 @@
     color: #e5e7eb;
     font-size: 0.8rem;
   }
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-    overflow-y: auto;
-  }
-  .gallery-item {
-    background: #0b1120;
-    border-radius: 10px;
-    padding: 4px;
-    border: 1px solid rgba(148,163,184,0.5);
-  }
-  .gallery-thumb {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 2px;
-  }
-  .gallery-caption {
-    font-size: 0.68rem;
-    color: #e5e7eb;
-    line-height: 1.2;
-  }
-
-  /* 大圖 Lightbox */
-  .lightbox {
-    position: fixed;
-    inset: 0;
-    background: rgba(15,23,42,0.9);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 50;
-    padding: 10px;
-  }
-  .lightbox.active {
-    display: flex;
-  }
-  .lightbox-img {
-    max-width: 100%;
-    max-height: 100%;
-    border-radius: 12px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-  }
-
-  /* 關帳模式：鎖定 item-card 內的輸入與按鈕 */
+  .gallery-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; overflow-y: auto; }
+  .gallery-item { background: #0b1120; border-radius: 10px; padding: 4px; border: 1px solid rgba(148,163,184,0.5); }
+  .gallery-thumb { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 8px; margin-bottom: 2px; }
+  .gallery-caption { font-size: 0.68rem; color: #e5e7eb; line-height: 1.2; }
+  .lightbox { position: fixed; inset: 0; background: rgba(15,23,42,0.9); display: none; align-items: center; justify-content: center; z-index: 50; padding: 10px; }
+  .lightbox.active { display: flex; }
+  .lightbox-img { max-width: 100%; max-height: 100%; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
   .app.closed-mode .item-card input,
   .app.closed-mode .item-card select,
   .app.closed-mode .item-card textarea,
-  .app.closed-mode .item-card button {
-    pointer-events: none;
-    opacity: 0.6;
-  }
-
-  .app.closed-mode .item-card .photo-preview {
-    pointer-events: none;
-  }
-
-  /* 關帳提示 */
-  #closeNote {
-    margin-top: 4px;
-  }
+  .app.closed-mode .item-card button { pointer-events: none; opacity: 0.6; }
+  .app.closed-mode .item-card .photo-preview { pointer-events: none; }
+  #closeNote { margin-top: 4px; }
 </style>
-
 </head>
 <body>
   <div class="top-bar"></div>
@@ -647,7 +328,7 @@
         <option value="9">9 月</option>
         <option value="10">10 月</option>
       </select>
-      <span id="monthInfo" style="font-size:0.8rem;color:#6b7280;">目前：114 年 11 月</span>
+      <span id="monthInfo">目前：114 年 11 月</span>
     </div>
 
     <div class="toolbar">
@@ -679,23 +360,17 @@
     </div>
 
     <div id="rankingSection" class="ranking-section">
-      <div style="font-size:0.8rem;margin-bottom:4px;">📊 本月用量排行（依總用量，由大到小）</div>
+      <div>📊 本月用量排行（依總用量，由大到小）</div>
       <table>
         <thead>
           <tr>
-            <th>#</th>
-            <th>品項</th>
-            <th>品名</th>
-            <th>總用量</th>
-            <th>金額小計</th>
+            <th>#</th><th>品項</th><th>品名</th><th>總用量</th><th>金額小計</th>
           </tr>
         </thead>
         <tbody id="rankingBody"></tbody>
       </table>
     </div>
 
-
-    <!-- 照片總覽 overlay -->
     <div class="gallery-overlay" id="galleryOverlay">
       <div class="gallery-header">
         <div class="gallery-header-title">📷 耗材照片總覽</div>
@@ -705,7 +380,6 @@
       <div class="gallery-grid" id="galleryGrid"></div>
     </div>
 
-    <!-- 大圖 Lightbox -->
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
       <img id="lightboxImg" class="lightbox-img" src="" alt="耗材照片預覽">
     </div>
@@ -714,8 +388,13 @@
   </div>
 
   <script>
-    const TEMPLATE_ITEMS = [{"category": "真空袋", "supplier": "包裝工場", "name": "食品級真空包裝袋", "spec": "(1.)NY2030\n20 x 30 cm+厚0.09mm", "unit": "100入/包", "unitPrice": 240.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "丸、魚", "note": "包裝工場\n0918-199246\n0958-199246\n0956-199246\n\nLINE：包裝工場"}, {"category": NaN, "supplier": NaN, "name": NaN, "spec": "(2.)NY1737\n17 x 37 cm+厚0.08mm", "unit": NaN, "unitPrice": 1.9, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "鮭", "note": NaN}, {"category": NaN, "supplier": NaN, "name": NaN, "spec": "(3.)NY1727\n17 x 27 cm+厚0.08mm", "unit": NaN, "unitPrice": 1.35, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "鯖", "note": NaN}, {"category": NaN, "supplier": NaN, "name": NaN, "spec": "(4.)NY1547\n15.5 x 47cm+厚0.08mm", "unit": NaN, "unitPrice": 2.25, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "尾巴", "note": NaN}, {"category": NaN, "supplier": NaN, "name": NaN, "spec": "(5.)NY2737\n27 x 37 cm+厚0.09cm", "unit": NaN, "unitPrice": 3.75, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "180-200g大尾肉鲫魚、鮭魚頭", "note": NaN}, {"category": NaN, "supplier": NaN, "name": NaN, "spec": "(6.)NY1323\n13 x 23 cm 厚0.08cm", "unit": NaN, "unitPrice": 0.88, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "蝦仁", "note": NaN}, {"category": NaN, "supplier": NaN, "name": "真空站立夾鏈立袋", "spec": "17*28cm ", "unit": "50入/包、\n40包/箱", "unitPrice": 3.2, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "甜蝦(新)", "note": NaN}, {"category": NaN, "supplier": "萬袋彩印LINE：包裝袋廖小姐", "name": "真空夾鏈立袋-大半斤", "spec": "NYB05-1\n175 x 260 mm+45mm", "unit": "100入/包", "unitPrice": 3.3, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "甜蝦", "note": "$3.3/PC"}, {"category": NaN, "supplier": NaN, "name": "真空袋", "spec": "N220400\n220 x 400 mm", "unit": NaN, "unitPrice": 1.8, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "秋刀魚/大片鮭魚", "note": "$1.8/PC"}, {"category": NaN, "supplier": NaN, "name": NaN, "spec": "N200300\n200 x 300 mm(80u)", "unit": NaN, "unitPrice": 1.75, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": "整件28包 $1.75/PC"}, {"category": NaN, "supplier": "金禾庄包裝", "name": "真空平面袋(整件)", "spec": "DD01-01/02\n20X30(80u)", "unit": NaN, "unitPrice": 1.8, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": "整件25包 $1.8/PC"}, {"category": "夾鏈袋", "supplier": "富田喬包裝", "name": "進口-牛皮開窗霧面夾鏈立袋 ", "spec": "150*220+40MM", "unit": "50個/包", "unitPrice": 2.5, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "一口烏、雪Q餅、火烤烏", "note": "富田喬包裝\nhttps://www.futienjoe.com.tw/"}, {"category": NaN, "supplier": "金禾庄包裝", "name": "牛皮霧面開窗夾鏈立袋", "spec": "DF03-01-03\n15X22+4CM", "unit": "50個/包", "unitPrice": 2.4, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "一口烏、雪Q餅、火烤烏", "note": " 金禾庄包裝材料\n06-355-6699\nhttps://reurl.cc/nEd8o8"}, {"category": NaN, "supplier": NaN, "name": "白牛皮霧面開窗夾鏈立袋", "spec": "DF03-02-04\n15X22+4CM", "unit": "50個/包", "unitPrice": 2.5, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "牛軋糖", "note": NaN}, {"category": NaN, "supplier": NaN, "name": "霧面夾鏈立袋", "spec": "DF04-02-06\n18X26+4CM", "unit": "50個/包", "unitPrice": 2.5, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "一口鮑", "note": NaN}, {"category": NaN, "supplier": NaN, "name": "霧面夾鏈立袋", "spec": "DF04-02-05\n17X23+4CM ", "unit": "50個/包", "unitPrice": 2.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "馬林糖", "note": NaN}, {"category": NaN, "supplier": NaN, "name": "透明夾鏈立袋", "spec": "DF04-03-04\n12X20+4CM", "unit": "50個/包", "unitPrice": 0.9, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "一口鮑(3顆入)", "note": NaN}, {"category": NaN, "supplier": "櫻桃屋", "name": "霧面夾鏈立袋", "spec": "18*26+4CM", "unit": "50個/包", "unitPrice": 7.2, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "一口鮑", "note": "櫻桃屋\n經理 陳淑芬\n0936-264-721\n高雄07-2367786\nhttps://reurl.cc/k7Y62x"}, {"category": NaN, "supplier": NaN, "name": "霧面夾鏈立袋", "spec": "16*24+4CM", "unit": "50個/包", "unitPrice": 5.8, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "馬林糖", "note": NaN}, {"category": NaN, "supplier": NaN, "name": "真空夾鍊立袋", "spec": "4兩13x22cm\n(條碼19092034)", "unit": "50個/包", "unitPrice": 5.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "一口鮑(3顆入)", "note": NaN}, {"category": NaN, "supplier": NaN, "name": "真空夾鍊立袋", "spec": "商品編號17092040\n22x35cm", "unit": "25個/包", "unitPrice": 12.8, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "翠翠酪酪包(6顆)", "note": NaN}, {"category": NaN, "supplier": "三鳳中街購入\n(佩樺買的)", "name": "透明夾鍊平袋", "spec": NaN, "unit": "50個", "unitPrice": 2.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "柳葉魚乾", "note": NaN}, {"category": "透明盤", "supplier": NaN, "name": "透明盤", "spec": NaN, "unit": "200個", "unitPrice": 1.2, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "柳葉魚乾", "note": NaN}, {"category": "紙箱", "supplier": "小林紙箱-台灣製造", "name": "三層B楞紙箱", "spec": "6號紙箱\n30x25x15", "unit": "50個/箱", "unitPrice": 11.68, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "牛軋5入、10入\n/常溫超商寄件", "note": "客製需提早5天訂\n小林紙箱-台灣製造\nhttps://reurl.cc/7eQG3N"}, {"category": NaN, "supplier": NaN, "name": "三層B楞紙箱", "spec": "1號紙箱\n45x30x30 ", "unit": "40個/箱", "unitPrice": 15.75, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "魚鬆禮盒/牛軋30入(最多)\n/超商常溫最大尺寸", "note": NaN}, {"category": NaN, "supplier": "咪咪購物", "name": "三層B楞紙箱", "spec": "5號\n30x25x15", "unit": "20個/捆", "unitPrice": 9.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "牛軋5入、10入\n/常溫超商寄件", "note": "咪咪購物\nhttps://reurl.cc/nEdayv"}, {"category": NaN, "supplier": NaN, "name": "三層B楞紙箱", "spec": "1號\n44x29x29 ", "unit": "20個/捆", "unitPrice": 15.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "魚鬆禮盒/牛軋30入(最多)\n/超商常溫最大尺寸", "note": NaN}, {"category": NaN, "supplier": "桃園紙箱小將", "name": "三層B楞紙箱", "spec": "45x30x15  CM", "unit": "20-120個", "unitPrice": 17.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "禮盒*2/海苔*20", "note": "桃園紙箱小將https://bit.ly/3dNnxUo"}, {"category": NaN, "supplier": "LINE小婕", "name": "紙箱(不防水)", "spec": "(小)30x25x15", "unit": "1個", "unitPrice": 8.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "S60常溫", "note": "LINE聯繫"}, {"category": NaN, "supplier": NaN, "name": "紙箱(防水)", "spec": "(小)30x25x15", "unit": "1個", "unitPrice": 8.5, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "S60常溫", "note": NaN}, {"category": NaN, "supplier": NaN, "name": "紙箱(防水)", "spec": "(中)45x30x15", "unit": 1, "unitPrice": 11.3, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "海苔20，烏魚子提盒11", "note": NaN}, {"category": NaN, "supplier": NaN, "name": "紙箱", "spec": "\n(大)44x29x29 ", "unit": "1個", "unitPrice": 20.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "烏金旺(6)*10/大禮盒*5/ 2入鳳梨酥32盒", "note": NaN}, {"category": NaN, "supplier": NaN, "name": "紙箱", "spec": "(特大)74.4x42x22.2", "unit": "1個", "unitPrice": 23.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "蛋捲設計款禮盒", "note": NaN}, {"category": NaN, "supplier": NaN, "name": "紙箱", "spec": "(特大)74.4x42x22.2", "unit": "1個", "unitPrice": 23.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "烏金旺(6)*20/大禮盒*10/ 2入鳳梨酥60盒", "note": NaN}, {"category": NaN, "supplier": NaN, "name": "紙箱", "spec": "(超特大)74.4*42*30.2", "unit": "1個", "unitPrice": 26.5, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "54包米蛋捲經濟包/56盒手提禮盒", "note": NaN}, {"category": "咖啡包", "supplier": "袋袋相傳", "name": "V330 耳掛過濾包外袋", "spec": "外徑寬10x高12.5 cm\n內徑寬8.6x高12 cm", "unit": "100入/包\n20包在打9折", "unitPrice": 2.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "魚鬆咖啡包", "note": "袋袋相傳 02-2556-1551台北市太原路11-6號1樓"}, {"category": "乾燥劑", "supplier": "o-buster\n小嵩無氧化學", "name": "安全生石灰乾燥劑 \nSafe Lime Desiccant(獨家產品)", "spec": "IC 3g\n45*60mm", "unit": "800pc/袋", "unitPrice": 0.6, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "馬林糖用", "note": "小嵩無氧化學南區業務 盧旗瓏0932-649206line聯絡"}, {"category": "紙張", "supplier": "金玉堂", "name": "鶴屋三用電腦標籤", "spec": "序號111\n2×12-24格(張)", "unit": "20張/包\n105張/盒\n650張/箱\n1000張/箱", "unitPrice": 4.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "DM寄送用標籤", "note": "金玉堂草衙店07-812-4089\n高雄市前鎮區佛德街38號"}, {"category": NaN, "supplier": NaN, "name": NaN, "spec": "序號15\n2×3-6格(張)", "unit": "20張/包\n105張/盒", "unitPrice": 4.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "全家-外箱麥頭貼紙", "note": NaN}, {"category": NaN, "supplier": NaN, "name": NaN, "spec": "序號16\n2×2-4格(張)", "unit": "20張/包\n105張/盒", "unitPrice": 4.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "超商單(蝦皮.賣貨便)", "note": NaN}, {"category": "貼紙", "supplier": NaN, "name": "鶴屋透明圓形標籤", "spec": "301T\n透明 30mm圓\n每包120粒，每張12粒", "unit": "120粒/包", "unitPrice": 0.20833333333333334, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": "禮盒\nDM寄送", "note": NaN}, {"category": "7-11\n超商冷凍紙箱", "supplier": "7-11", "name": "S60", "spec": "27×20×13cm  10 kg", "unit": "10個/組", "unitPrice": 12.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "S90", "spec": "35×30×25cm  10 kg", "unit": "10個/組", "unitPrice": 20.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": "保麗龍", "supplier": "大甄(華豐)", "name": "保麗龍", "spec": "中(鱈魚箱)(天地蓋)", "unit": "組", "unitPrice": 30.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": "大甄(華豐)", "name": "保麗龍", "spec": "特大-20KG(天地蓋)", "unit": "組", "unitPrice": 55.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": "大甄(華豐)", "name": "保麗龍", "spec": "大-16KG(天地蓋)", "unit": "組", "unitPrice": 48.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": "大甄(華豐)", "name": "保麗龍", "spec": "小-3公升(天地蓋)", "unit": "組", "unitPrice": 40.0, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": "公版禮盒", "supplier": "南海豐", "name": "公版大禮盒", "spec": "21×38.5×7cm", "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "烏魚子公版", "spec": "14×4×24.3cm", "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "設計款盒(黃白款、魚鬆盒)", "spec": "10.5×6×13cm", "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "烏金旺六顆入", "spec": "20.3×20.6×7.3cm", "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "烏金旺兩顆入", "spec": "16.1×10.5×5.6cm", "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "海苔禮盒", "spec": "34×22.5×95cm", "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "米蛋捲經濟袋", "spec": "13×28×10cm", "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "米蛋捲手提禮盒", "spec": "6.8×11.3×18.1", "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "鳳梨酥6入底盒2800", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "鳳梨酥6入內襯 2000", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "鳳梨酥6入袖套 825", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "鳳梨酥2入底盒536", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "鳳梨酥2入內襯 500", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "鳳梨酥2入袖套500", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "鳳梨酥小黑盒 6675", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "烏金旺大禮盒袖套225", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "烏烏QQ內襯 2250", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "雙罐內襯1656", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "蛋捲135G手提禮盒2242", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "黃色公版隨身盒1260", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "鮭魚鬆咖啡包 隨身盒1049", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "鱈魚鬆咖啡包 隨身盒1049", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "公版大禮盒 底盒2627", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "公版大禮盒 袖套427", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "手提烏魚子精緻禮盒 袖套1962", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "野生烏魚子 底盒(紅)2000", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "中紙袋922 小紙袋960", "spec": NaN, "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": "提袋", "supplier": NaN, "name": "小", "spec": "寬17側8高25cm", "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "中", "spec": "寬23側10高28cm", "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}, {"category": NaN, "supplier": NaN, "name": "大", "spec": "寬42側17高24cm", "unit": NaN, "unitPrice": null, "daily": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "usageType": NaN, "note": NaN}];
-    const EXCEL_HEADER_ROW = ["品項", "廠商", "品名", "型號/規格", "包裝/單位", "單價", "11/1", "11/2", "11/3", "11/4", "11/5", "11/6", "11/7", "11/8", "11/9", "11/10", "11/11", "11/12", "11/13", "11/14", "11/15", "11/16", "11/17", "11/18", "11/19", "11/20", "11/21", "11/22", "11/23", "11/24", "11/25", "11/26", "11/27", "11/28", "11/29", "11/30", "領用金額", "適用種類", "備註", "", ""];
+    // 注意：你的 TEMPLATE_ITEMS 裡原本有 NaN，JSON 會失敗；這裡把 NaN 先改成 null
+    const TEMPLATE_ITEMS = [
+      {"category":"真空袋","supplier":"包裝工場","name":"食品級真空包裝袋","spec":"(1.)NY2030\n20 x 30 cm+厚0.09mm","unit":"100入/包","unitPrice":240.0,"daily":Array(31).fill(null),"usageType":"丸、魚","note":"包裝工場\n0918-199246\n0958-199246\n0956-199246\n\nLINE：包裝工場"},
+      {"category":null,"supplier":null,"name":null,"spec":"(2.)NY1737\n17 x 37 cm+厚0.08mm","unit":null,"unitPrice":1.9,"daily":Array(31).fill(null),"usageType":"鮭","note":null},
+      {"category":null,"supplier":null,"name":null,"spec":"(3.)NY1727\n17 x 27 cm+厚0.08mm","unit":null,"unitPrice":1.35,"daily":Array(31).fill(null),"usageType":"鯖","note":null},
+      {"category":null,"supplier":null,"name":null,"spec":"(4.)NY1547\n15.5 x 47cm+厚0.08mm","unit":null,"unitPrice":2.25,"daily":Array(31).fill(null),"usageType":"尾巴","note":null}
+    ];
 
     let currentYear = 114;
     let currentMonth = 11;
@@ -726,30 +405,18 @@
     let unsubscribeRealtime = null;
     let monthClosed = false;
 
-    function adYear(rocYear) {
-      return rocYear + 1911;
-    }
-
+    function adYear(rocYear) { return rocYear + 1911; }
     function daysInMonth(rocYear, month) {
       const y = adYear(rocYear);
       return new Date(y, month, 0).getDate();
     }
-
-    function getDaysInCurrentMonth() {
-      return daysInMonth(currentYear, currentMonth);
-    }
-
-    function storageKeyForCurrent() {
-      return "nhf_packing_R" + currentYear + "_M" + currentMonth;
-    }
-
+    function getDaysInCurrentMonth() { return daysInMonth(currentYear, currentMonth); }
+    function storageKeyForCurrent() { return "nhf_packing_R" + currentYear + "_M" + currentMonth; }
     function formatMoney(num) {
       if (num == null || isNaN(num)) return "0";
       return Math.round(num).toLocaleString("zh-TW");
     }
 
-    
-    // 壓縮圖片：限制寬高與容量，完成後回傳 dataURL 與 Blob
     function compressImage(file, maxWidth, maxHeight, maxSizeKB, callback) {
       const reader = new FileReader();
       reader.onload = function (e) {
@@ -771,21 +438,13 @@
           function tryExport() {
             canvas.toBlob(
               function (blob) {
-                if (!blob) {
-                  alert("圖片壓縮失敗，請換一張照片。");
-                  return;
-                }
+                if (!blob) { alert("圖片壓縮失敗，請換一張照片。"); return; }
                 const sizeKB = blob.size / 1024;
-                if (sizeKB > maxSizeKB && quality > 0.3) {
-                  quality -= 0.1;
-                  tryExport();
-                } else if (sizeKB > maxSizeKB) {
-                  alert("圖片仍超過限制大小（" + maxSizeKB + "KB），請拍小一點或先縮圖。");
-                } else {
+                if (sizeKB > maxSizeKB && quality > 0.3) { quality -= 0.1; tryExport(); }
+                else if (sizeKB > maxSizeKB) { alert("圖片仍超過限制大小（" + maxSizeKB + "KB），請拍小一點或先縮圖。"); }
+                else {
                   const reader2 = new FileReader();
-                  reader2.onload = function (ev) {
-                    callback(ev.target.result, blob); // dataURL 與 Blob
-                  };
+                  reader2.onload = function (ev) { callback(ev.target.result, blob); };
                   reader2.readAsDataURL(blob);
                 }
               },
@@ -800,49 +459,26 @@
       reader.readAsDataURL(file);
     }
 
-    // 開啟大圖 Lightbox
     function openLightbox(src) {
-      const lb = document.getElementById("lightbox");
-      const img = document.getElementById("lightboxImg");
-      img.src = src;
-      lb.classList.add("active");
+      document.getElementById("lightboxImg").src = src;
+      document.getElementById("lightbox").classList.add("active");
     }
-    function closeLightbox() {
-      const lb = document.getElementById("lightbox");
-      lb.classList.remove("active");
-    }
+    function closeLightbox() { document.getElementById("lightbox").classList.remove("active"); }
 
-    // 照片總覽：開啟、關閉與渲染
     function openGallery() {
-      const overlay = document.getElementById("galleryOverlay");
-      overlay.classList.add("active");
-      const search = document.getElementById("gallerySearch");
-      if (search) search.value = "";
+      document.getElementById("galleryOverlay").classList.add("active");
+      document.getElementById("gallerySearch").value = "";
       renderGallery();
     }
-
-    function closeGallery() {
-      const overlay = document.getElementById("galleryOverlay");
-      overlay.classList.remove("active");
-    }
+    function closeGallery() { document.getElementById("galleryOverlay").classList.remove("active"); }
 
     function renderGallery() {
       const grid = document.getElementById("galleryGrid");
-      if (!grid) return;
-      const searchEl = document.getElementById("gallerySearch");
-      const kw = (searchEl && searchEl.value ? searchEl.value : "").toLowerCase().trim();
+      const kw = (document.getElementById("gallerySearch").value || "").toLowerCase().trim();
       grid.innerHTML = "";
-      const indices = items.map((_, i) => i);
-      indices.forEach((idx) => {
-        const item = items[idx];
+      items.forEach((item, idx) => {
         if (!item || !item.photoUrl) return;
-        const fields = [
-          item.category || "",
-          item.name || "",
-          item.supplier || "",
-          item.usageType || "",
-          item.spec || ""
-        ].join(" ").toLowerCase();
+        const fields = [item.category||"", item.name||"", item.supplier||"", item.usageType||"", item.spec||""].join(" ").toLowerCase();
         if (kw && !fields.includes(kw)) return;
 
         const div = document.createElement("div");
@@ -863,41 +499,22 @@
       });
     }
 
-    // 取得單一品項本月總領用數量
-    function getItemTotalUsage(item) {
-      if (!item) return 0;
-      ensureDailyArray(item);
+    function ensureDailyArray(item) {
       const DAYS = getDaysInCurrentMonth();
-      let sum = 0;
-      for (let d = 0; d < DAYS; d++) {
-        const v = item.daily[d];
-        if (v != null && !isNaN(v)) {
-          sum += parseFloat(v);
-        }
-      }
-      return sum;
+      if (!Array.isArray(item.daily)) item.daily = Array(DAYS).fill(null);
+      else if (item.daily.length < DAYS) item.daily = item.daily.concat(Array(DAYS - item.daily.length).fill(null));
+      else if (item.daily.length > DAYS) item.daily = item.daily.slice(0, DAYS);
     }
-function ensureDailyArray(item) {
-      const DAYS = getDaysInCurrentMonth();
-      if (!Array.isArray(item.daily)) {
-        item.daily = Array(DAYS).fill(null);
-      } else if (item.daily.length < DAYS) {
-        item.daily = item.daily.concat(Array(DAYS - item.daily.length).fill(null));
-      } else if (item.daily.length > DAYS) {
-        item.daily = item.daily.slice(0, DAYS);
-      }
+
+    function getItemTotalUsage(item) {
+      ensureDailyArray(item);
+      return item.daily.reduce((s, v) => s + (isNaN(parseFloat(v)) ? 0 : parseFloat(v)), 0);
     }
 
     function calcTotal(item) {
       ensureDailyArray(item);
       const price = parseFloat(item.unitPrice || 0) || 0;
-      let sumQty = 0;
-      const DAYS = getDaysInCurrentMonth();
-      for (let i = 0; i < DAYS; i++) {
-        const v = parseFloat(item.daily[i]);
-        if (!isNaN(v)) sumQty += v;
-      }
-      return price * sumQty;
+      return price * getItemTotalUsage(item);
     }
 
     function getFilteredIndicesByKeyword(keyword) {
@@ -905,16 +522,8 @@ function ensureDailyArray(item) {
       const kw = keyword.toLowerCase();
       const res = [];
       items.forEach((item, idx) => {
-        const fields = [
-          item.category || "",
-          item.name || "",
-          item.supplier || "",
-          item.spec || "",
-          item.usageType || ""
-        ].join(" ").toLowerCase();
-        if (fields.includes(kw)) {
-          res.push(idx);
-        }
+        const fields = [item.category||"", item.name||"", item.supplier||"", item.spec||"", item.usageType||""].join(" ").toLowerCase();
+        if (fields.includes(kw)) res.push(idx);
       });
       return res;
     }
@@ -922,60 +531,28 @@ function ensureDailyArray(item) {
     function updateGrandTotal() {
       let grand = 0;
       const indices = filteredIndices.length ? filteredIndices : items.map((_, i) => i);
-      indices.forEach(idx => {
-        const item = items[idx];
-        grand += calcTotal(item);
-      });
+      indices.forEach(idx => { grand += calcTotal(items[idx]); });
       document.getElementById("grandTotal").textContent = formatMoney(grand);
     }
 
     function updateRanking() {
       const tbody = document.getElementById("rankingBody");
-      if (!tbody) return;
       tbody.innerHTML = "";
       if (!rankingVisible) return;
 
-      const DAYS = getDaysInCurrentMonth();
-      const stats = items.map((item, idx) => {
-        ensureDailyArray(item);
-        let qty = 0;
-        for (let i = 0; i < DAYS; i++) {
-          const v = parseFloat(item.daily[i]);
-          if (!isNaN(v)) qty += v;
-        }
-        const amt = calcTotal(item);
-        return {
-          index: idx,
-          category: item.category || "",
-          name: item.name || "",
-          qty,
-          amt
-        };
-      });
-
-      stats.sort((a, b) => {
-        if (b.qty !== a.qty) return b.qty - a.qty;
-        return b.amt - a.amt;
-      });
-
-      const top = stats.slice(0, 20);
-      top.forEach((s, i) => {
+      const stats = items.map((item, idx) => ({
+        index: idx,
+        category: item.category || "",
+        name: item.name || "",
+        qty: getItemTotalUsage(item),
+        amt: calcTotal(item)
+      }));
+      stats.sort((a, b) => (b.qty !== a.qty ? b.qty - a.qty : b.amt - a.amt));
+      stats.slice(0, 20).forEach((s, i) => {
         const tr = document.createElement("tr");
-        const tdRank = document.createElement("td");
-        tdRank.textContent = i + 1;
-        const tdCat = document.createElement("td");
-        tdCat.textContent = s.category;
-        const tdName = document.createElement("td");
-        tdName.textContent = s.name;
-        const tdQty = document.createElement("td");
-        tdQty.textContent = s.qty || "";
-        const tdAmt = document.createElement("td");
-        tdAmt.textContent = s.amt ? formatMoney(s.amt) : "";
-        tr.appendChild(tdRank);
-        tr.appendChild(tdCat);
-        tr.appendChild(tdName);
-        tr.appendChild(tdQty);
-        tr.appendChild(tdAmt);
+        [""+(i+1), s.category, s.name, (s.qty||""), (s.amt ? formatMoney(s.amt) : "")].forEach(val=>{
+          const td=document.createElement("td"); td.textContent=val; tr.appendChild(td);
+        });
         tbody.appendChild(tr);
       });
     }
@@ -986,12 +563,7 @@ function ensureDailyArray(item) {
       const indices = filteredIndices.length ? filteredIndices : items.map((_, i) => i);
 
       document.getElementById("daysInfo").textContent = getDaysInCurrentMonth() + " 天";
-      const dayInfo = document.getElementById("dayFilterInfo");
-      if (currentDayFilter) {
-        dayInfo.textContent = "｜目前只顯示日期：" + currentMonth + "/" + currentDayFilter;
-      } else {
-        dayInfo.textContent = "";
-      }
+      document.getElementById("dayFilterInfo").textContent = currentDayFilter ? ("｜目前只顯示日期：" + currentMonth + "/" + currentDayFilter) : "";
 
       indices.forEach((realIdx) => {
         const item = items[realIdx];
@@ -1025,16 +597,8 @@ function ensureDailyArray(item) {
 
         card.appendChild(header);
 
-        nameInput.style.flex = "1";
-        nameInput.onchange = (e) => { item.name = e.target.value; };
-        header.appendChild(nameInput);
-
-        card.appendChild(header);
-
-        // 照片區：上傳＋預覽＋狀態
         const photoLine = document.createElement("div");
         photoLine.className = "line photo-line";
-
         const photoLabel = document.createElement("label");
         photoLabel.textContent = "照片";
         photoLine.appendChild(photoLabel);
@@ -1044,14 +608,9 @@ function ensureDailyArray(item) {
 
         const img = document.createElement("img");
         img.className = "photo-preview";
-        if (item.photoUrl) {
-          img.src = item.photoUrl;
-        } else {
-          img.style.display = "none";
-        }
-        img.onclick = () => {
-          if (item.photoUrl) openLightbox(item.photoUrl);
-        };
+        if (item.photoUrl) img.src = item.photoUrl;
+        else img.style.display = "none";
+        img.onclick = () => { if (item.photoUrl) openLightbox(item.photoUrl); };
         photoWrapper.appendChild(img);
 
         const fileInput = document.createElement("input");
@@ -1061,12 +620,8 @@ function ensureDailyArray(item) {
 
         const statusDiv = document.createElement("div");
         statusDiv.className = "photo-status";
-        if (item.photoUrl) {
-          statusDiv.textContent = "✅ 已有照片";
-          statusDiv.classList.add("photo-status-ok");
-        } else {
-          statusDiv.textContent = "尚未上傳照片";
-        }
+        if (item.photoUrl) { statusDiv.textContent = "✅ 已有照片"; statusDiv.classList.add("photo-status-ok"); }
+        else { statusDiv.textContent = "尚未上傳照片"; }
 
         fileInput.onchange = (e) => {
           const file = e.target.files[0];
@@ -1083,7 +638,6 @@ function ensureDailyArray(item) {
           statusDiv.classList.remove("photo-status-ok", "photo-status-warn");
           statusDiv.classList.add("photo-status-wait");
 
-          // 壓縮後再上傳（或暫存）
           compressImage(file, 800, 800, 200, function (dataUrl, blob) {
             if (typeof uploadPhotoToStorage === "function") {
               statusDiv.textContent = "上傳雲端中…";
@@ -1138,7 +692,6 @@ function ensureDailyArray(item) {
           }
         };
         photoWrapper.appendChild(clearPhotoBtn);
-
         photoWrapper.appendChild(statusDiv);
 
         const photoNote = document.createElement("div");
@@ -1151,47 +704,18 @@ function ensureDailyArray(item) {
 
         const line1 = document.createElement("div");
         line1.className = "line";
-
-        const supLabel = document.createElement("label");
-        supLabel.textContent = "廠商";
-        line1.appendChild(supLabel);
-        const supInput = document.createElement("input");
-        supInput.type = "text";
+        line1.innerHTML = '<label>廠商</label><input type="text"><label>單位</label><input type="text"><label>單價</label><input type="number">';
+        const [supInput, unitInput, priceInput] = line1.querySelectorAll("input");
         supInput.value = item.supplier || "";
-        supInput.onchange = (e) => { item.supplier = e.target.value; };
-        line1.appendChild(supInput);
-
-        const unitLabel = document.createElement("label");
-        unitLabel.textContent = "單位";
-        line1.appendChild(unitLabel);
-        const unitInput = document.createElement("input");
-        unitInput.type = "text";
         unitInput.value = item.unit || "";
-        unitInput.onchange = (e) => { item.unit = e.target.value; };
-        line1.appendChild(unitInput);
-
-        const priceLabel = document.createElement("label");
-        priceLabel.textContent = "單價";
-        line1.appendChild(priceLabel);
-        const priceInput = document.createElement("input");
-        priceInput.type = "number";
         priceInput.value = item.unitPrice == null ? "" : item.unitPrice;
-        priceInput.onchange = (e) => {
-          const v = e.target.value.trim();
-          item.unitPrice = v === "" ? null : parseFloat(v);
-          totalSpan.textContent = formatMoney(calcTotal(item));
-          updateGrandTotal();
-          updateRanking();
-        };
-        line1.appendChild(priceInput);
-
+        supInput.onchange = e => item.supplier = e.target.value;
+        unitInput.onchange = e => item.unit = e.target.value;
         card.appendChild(line1);
 
         const line2 = document.createElement("div");
         line2.className = "line";
-        const specLabel = document.createElement("label");
-        specLabel.textContent = "型號/規格";
-        line2.appendChild(specLabel);
+        line2.innerHTML = '<label>型號/規格</label>';
         card.appendChild(line2);
 
         const specTa = document.createElement("textarea");
@@ -1202,27 +726,14 @@ function ensureDailyArray(item) {
 
         const line3 = document.createElement("div");
         line3.className = "line";
-        const usageLabel = document.createElement("label");
-        usageLabel.textContent = "適用種類";
-        line3.appendChild(usageLabel);
-        const usageInput = document.createElement("input");
-        usageInput.type = "text";
+        line3.innerHTML = '<label>適用種類</label><input type="text"><label>備註</label><input type="text">';
+        const [usageInput, noteInput] = line3.querySelectorAll("input");
         usageInput.value = item.usageType || "";
-        usageInput.onchange = (e) => { item.usageType = e.target.value; };
-        line3.appendChild(usageInput);
-
-        const noteLabel = document.createElement("label");
-        noteLabel.textContent = "備註";
-        line3.appendChild(noteLabel);
-        const noteInput = document.createElement("input");
-        noteInput.type = "text";
         noteInput.value = item.note || "";
-        noteInput.onchange = (e) => { item.note = e.target.value; };
-        line3.appendChild(noteInput);
-
+        usageInput.onchange = e => item.usageType = e.target.value;
+        noteInput.onchange = e => item.note = e.target.value;
         card.appendChild(line3);
 
-        // 庫存：期初 / 期末盤點＋理論結存與差異
         const stockLine = document.createElement("div");
         stockLine.className = "line";
         const stockLabel = document.createElement("label");
@@ -1244,6 +755,7 @@ function ensureDailyArray(item) {
         openingInput.placeholder = "期初";
         openingInput.style.maxWidth = "90px";
         openingInput.value = item.openingQty == null ? "" : item.openingQty;
+
         const closingInput = document.createElement("input");
         closingInput.type = "number";
         closingInput.placeholder = "期末盤點";
@@ -1254,45 +766,51 @@ function ensureDailyArray(item) {
         stockInfo.className = "photo-note";
 
         function refreshStockInfo() {
-          const openVal = openingInput.value.trim();
-          const closeVal = closingInput.value.trim();
-          const opening = openVal === "" ? 0 : (parseFloat(openVal) || 0);
+          const opening = openingInput.value.trim() === "" ? 0 : (parseFloat(openingInput.value) || 0);
           const used = getItemTotalUsage(item);
           const theoreticalEnd = opening - used;
 
-          if (closeVal === "") {
+          if (closingInput.value.trim() === "") {
             stockInfo.textContent = "理論結存（期初－本月領用）：" + theoreticalEnd + "（尚未輸入盤點量）";
           } else {
-            const closing = parseFloat(closeVal) || 0;
+            const closing = parseFloat(closingInput.value) || 0;
             const diff = closing - theoreticalEnd;
             stockInfo.textContent = "理論結存：" + theoreticalEnd + "｜盤點：" + closing + "｜差異：" + diff;
           }
         }
 
-        openingInput.onchange = (e) => {
-          const v = e.target.value.trim();
-          item.openingQty = v === "" ? null : parseFloat(v);
-          refreshStockInfo();
-        };
-        closingInput.onchange = (e) => {
-          const v = e.target.value.trim();
-          item.closingQty = v === "" ? null : parseFloat(v);
-          refreshStockInfo();
-        };
+        openingInput.onchange = (e) => { item.openingQty = e.target.value.trim() === "" ? null : parseFloat(e.target.value); refreshStockInfo(); };
+        closingInput.onchange = (e) => { item.closingQty = e.target.value.trim() === "" ? null : parseFloat(e.target.value); refreshStockInfo(); };
 
         stockRow.appendChild(openingInput);
         stockRow.appendChild(closingInput);
         stockWrapper.appendChild(stockRow);
         stockWrapper.appendChild(stockInfo);
-
         stockLine.appendChild(stockWrapper);
         card.appendChild(stockLine);
+
+        const footer = document.createElement("div");
+        footer.className = "item-footer";
+
+        const totalLabel = document.createElement("div");
+        totalLabel.innerHTML = '小計金額：<strong><span></span></strong> 元';
+        const totalSpan = totalLabel.querySelector("span");
+        totalSpan.textContent = formatMoney(calcTotal(item));
+        footer.appendChild(totalLabel);
+
+        priceInput.onchange = (e) => {
+          const v = e.target.value.trim();
+          item.unitPrice = v === "" ? null : parseFloat(v);
+          totalSpan.textContent = formatMoney(calcTotal(item));
+          updateGrandTotal();
+          updateRanking();
+          refreshStockInfo();
+        };
 
         refreshStockInfo();
 
         const daysDiv = document.createElement("div");
         daysDiv.className = "days";
-
         const title = document.createElement("div");
         title.className = "days-title";
         title.textContent = "每日領用數量（" + currentMonth + " 月）";
@@ -1300,7 +818,6 @@ function ensureDailyArray(item) {
 
         const grid = document.createElement("div");
         grid.className = "days-grid";
-
         const DAYS = getDaysInCurrentMonth();
         for (let d = 0; d < DAYS; d++) {
           const dayNumber = d + 1;
@@ -1323,23 +840,13 @@ function ensureDailyArray(item) {
             totalSpan.textContent = formatMoney(calcTotal(item));
             updateGrandTotal();
             updateRanking();
+            refreshStockInfo();
           };
           cell.appendChild(inp);
-
           grid.appendChild(cell);
         }
-
         daysDiv.appendChild(grid);
         card.appendChild(daysDiv);
-
-        const footer = document.createElement("div");
-        footer.className = "item-footer";
-
-        const totalLabel = document.createElement("div");
-        totalLabel.innerHTML = '小計金額：<strong><span></span></strong> 元';
-        const totalSpan = totalLabel.querySelector("span");
-        totalSpan.textContent = formatMoney(calcTotal(item));
-        footer.appendChild(totalLabel);
 
         const delBtn = document.createElement("button");
         delBtn.className = "danger";
@@ -1347,8 +854,7 @@ function ensureDailyArray(item) {
         delBtn.onclick = () => {
           if (confirm("確定刪除第 " + (realIdx + 1) + " 個品項？")) {
             items.splice(realIdx, 1);
-            const kw = document.getElementById("searchInput").value.trim();
-            filteredIndices = getFilteredIndicesByKeyword(kw);
+            filteredIndices = getFilteredIndicesByKeyword(document.getElementById("searchInput").value.trim());
             renderItems();
             updateGrandTotal();
             updateRanking();
@@ -1357,17 +863,13 @@ function ensureDailyArray(item) {
         footer.appendChild(delBtn);
 
         card.appendChild(footer);
-
         container.appendChild(card);
       });
 
       document.getElementById("itemCount").textContent = items.length;
-      const infoEl = document.getElementById("searchInfo");
-      if (filteredIndices.length) {
-        infoEl.textContent = "目前顯示 " + indices.length + " / 全部 " + items.length + " 個品項。";
-      } else {
-        infoEl.textContent = "目前顯示全部 " + items.length + " 個品項。";
-      }
+      document.getElementById("searchInfo").textContent = filteredIndices.length
+        ? ("目前顯示 " + filteredIndices.length + " / 全部 " + items.length + " 個品項。")
+        : ("目前顯示全部 " + items.length + " 個品項。");
 
       updateGrandTotal();
       updateRanking();
@@ -1375,42 +877,26 @@ function ensureDailyArray(item) {
 
     function addItem() {
       const DAYS = getDaysInCurrentMonth();
-      const newItem = {
-        category: "",
-        supplier: "",
-        name: "",
-        spec: "",
-        unit: "",
-        unitPrice: null,
-        daily: Array(DAYS).fill(null),
-        usageType: "",
-        note: "",
-        openingQty: null,
-        closingQty: null,
+      items.push({
+        category: "", supplier: "", name: "", spec: "", unit: "",
+        unitPrice: null, daily: Array(DAYS).fill(null),
+        usageType: "", note: "",
+        openingQty: null, closingQty: null,
         photoUrl: null
-      };
-      items.push(newItem);
-      const kw = document.getElementById("searchInput").value.trim();
-      filteredIndices = getFilteredIndicesByKeyword(kw);
+      });
+      filteredIndices = getFilteredIndicesByKeyword(document.getElementById("searchInput").value.trim());
       renderItems();
     }
 
     function saveData() {
-      try {
-        localStorage.setItem(storageKeyForCurrent(), JSON.stringify(items));
-      } catch (e) {
-        alert("儲存失敗：" + e.message);
-        return;
-      }
+      try { localStorage.setItem(storageKeyForCurrent(), JSON.stringify(items)); }
+      catch (e) { alert("儲存失敗：" + e.message); return; }
 
-      // 同步到 Firestore（若可用）
       if (typeof db !== "undefined" && db) {
         const docId = "R" + currentYear + "_M" + currentMonth;
         db.collection("consumablesMonths").doc(docId).set({
-          rocYear: currentYear,
-          month: currentMonth,
-          items: items,
-          closed: monthClosed,
+          rocYear: currentYear, month: currentMonth,
+          items: items, closed: monthClosed,
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true }).then(() => {
           alert("已儲存 " + currentYear + "/" + currentMonth + " 的資料，並同步到雲端。");
@@ -1430,16 +916,10 @@ function ensureDailyArray(item) {
     }
 
     function onSearchChange() {
-      const kw = document.getElementById("searchInput").value.trim();
-      filteredIndices = getFilteredIndicesByKeyword(kw);
+      filteredIndices = getFilteredIndicesByKeyword(document.getElementById("searchInput").value.trim());
       renderItems();
     }
-
-    function resetSearch() {
-      document.getElementById("searchInput").value = "";
-      filteredIndices = [];
-      renderItems();
-    }
+    function resetSearch() { document.getElementById("searchInput").value = ""; filteredIndices = []; renderItems(); }
 
     function showTodayOnly() {
       const today = new Date();
@@ -1450,52 +930,28 @@ function ensureDailyArray(item) {
       }
       const day = today.getDate();
       const DAYS = getDaysInCurrentMonth();
-      if (day > DAYS) {
-        alert("今天日期超過本月天數，將維持顯示全部日期。");
-        currentDayFilter = null;
-      } else {
-        currentDayFilter = day;
-      }
+      currentDayFilter = (day > DAYS) ? null : day;
+      if (day > DAYS) alert("今天日期超過本月天數，將維持顯示全部日期。");
       renderItems();
     }
-
-    function showAllDays() {
-      currentDayFilter = null;
-      renderItems();
-    }
+    function showAllDays() { currentDayFilter = null; renderItems(); }
 
     function toggleRanking() {
       rankingVisible = !rankingVisible;
       const sec = document.getElementById("rankingSection");
       const btn = document.getElementById("rankingToggleBtn");
-      if (rankingVisible) {
-        sec.style.display = "block";
-        btn.textContent = "📉 收起排行";
-      } else {
-        sec.style.display = "none";
-        btn.textContent = "📊 顯示排行";
-      }
+      sec.style.display = rankingVisible ? "block" : "none";
+      btn.textContent = rankingVisible ? "📉 收起排行" : "📊 顯示排行";
       updateRanking();
     }
 
     function exportCsv() {
       const DAYS = getDaysInCurrentMonth();
-      const header = [];
-      header.push(EXCEL_HEADER_ROW[0] || "品項");
-      header.push(EXCEL_HEADER_ROW[1] || "廠商");
-      header.push(EXCEL_HEADER_ROW[2] || "品名");
-      header.push(EXCEL_HEADER_ROW[3] || "型號/規格");
-      header.push(EXCEL_HEADER_ROW[4] || "包裝/單位");
-      header.push(EXCEL_HEADER_ROW[5] || "單價");
-      for (let d = 1; d <= DAYS; d++) {
-        header.push(currentMonth + "/" + d);
-      }
-      header.push(EXCEL_HEADER_ROW[36] || "金額小計");
-      header.push(EXCEL_HEADER_ROW[37] || "適用種類");
-      header.push(EXCEL_HEADER_ROW[38] || "備註");
+      const header = ["品項","廠商","品名","型號/規格","包裝/單位","單價"];
+      for (let d = 1; d <= DAYS; d++) header.push(currentMonth + "/" + d);
+      header.push("金額小計","適用種類","備註");
 
       const rows = [header];
-
       items.forEach((item) => {
         ensureDailyArray(item);
         const row = [
@@ -1506,9 +962,7 @@ function ensureDailyArray(item) {
           item.unit || "",
           item.unitPrice == null ? "" : item.unitPrice
         ];
-        for (let d = 0; d < DAYS; d++) {
-          row.push(item.daily[d] == null ? "" : item.daily[d]);
-        }
+        for (let d = 0; d < DAYS; d++) row.push(item.daily[d] == null ? "" : item.daily[d]);
         row.push(calcTotal(item));
         row.push(item.usageType || "");
         row.push((item.note || "").replace(/\s+/g, " "));
@@ -1518,14 +972,13 @@ function ensureDailyArray(item) {
       const csv = rows.map(cols =>
         cols.map(v => {
           const s = String(v == null ? "" : v);
-          if (s.includes(",") || s.includes('"') || s.includes("\n")) {
-            return '"' + s.replace(/"/g, '""') + '"';
-          }
+          if (s.includes(",") || s.includes('"') || s.includes("\n")) return '"' + s.replace(/"/g, '""') + '"';
           return s;
         }).join(",")
       ).join("\n");
 
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const BOM = "\uFEFF";
+      const blob = new Blob([BOM + csv], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -1538,22 +991,20 @@ function ensureDailyArray(item) {
 
     function cloneTemplateForMonth() {
       const DAYS = getDaysInCurrentMonth();
-      return TEMPLATE_ITEMS.map(src => {
-        return {
-          category: src.category,
-          supplier: src.supplier,
-          name: src.name,
-          spec: src.spec,
-          unit: src.unit,
-          unitPrice: src.unitPrice,
-          daily: Array(DAYS).fill(null),
-          usageType: src.usageType,
-          note: src.note,
-          openingQty: src.openingQty || null,
-          closingQty: src.closingQty || null,
-          photoUrl: src.photoUrl || null
-        };
-      });
+      return TEMPLATE_ITEMS.map(src => ({
+        category: src.category,
+        supplier: src.supplier,
+        name: src.name,
+        spec: src.spec,
+        unit: src.unit,
+        unitPrice: src.unitPrice,
+        daily: Array(DAYS).fill(null),
+        usageType: src.usageType,
+        note: src.note,
+        openingQty: src.openingQty || null,
+        closingQty: src.closingQty || null,
+        photoUrl: src.photoUrl || null
+      }));
     }
 
     function loadYearMonth(rocYear, month, forceReset) {
@@ -1564,26 +1015,16 @@ function ensureDailyArray(item) {
       filteredIndices = [];
       document.getElementById("searchInput").value = "";
 
-      // 清除上一個月的即時監聽
-      if (unsubscribeRealtime) {
-        unsubscribeRealtime();
-        unsubscribeRealtime = null;
-      }
+      if (unsubscribeRealtime) { unsubscribeRealtime(); unsubscribeRealtime = null; }
       monthClosed = false;
       updateCloseUI();
 
-      // 先從本機載入暫存（若有）
       let hasLocal = false;
       if (!forceReset) {
         const saved = localStorage.getItem(storageKeyForCurrent());
         if (saved) {
-          try {
-            items = JSON.parse(saved);
-            hasLocal = true;
-            renderItems();
-          } catch (e) {
-            console.warn("解析已存資料失敗，改用預設：", e);
-          }
+          try { items = JSON.parse(saved); hasLocal = true; renderItems(); }
+          catch (e) { console.warn("解析已存資料失敗，改用預設：", e); }
         }
       }
 
@@ -1592,48 +1033,37 @@ function ensureDailyArray(item) {
           if (currentYear === 114 && currentMonth === 11) {
             items = JSON.parse(JSON.stringify(TEMPLATE_ITEMS));
             items.forEach(it => ensureDailyArray(it));
-          } else {
-            items = cloneTemplateForMonth();
-          }
+          } else items = cloneTemplateForMonth();
           monthClosed = false;
           renderItems();
           updateCloseUI();
         }
       };
 
-      // 若有 Firestore，啟用即時監聽
       if (typeof db !== "undefined" && db) {
         const docId = "R" + currentYear + "_M" + currentMonth;
         const docRef = db.collection("consumablesMonths").doc(docId);
         unsubscribeRealtime = docRef.onSnapshot((doc) => {
           if (doc.exists) {
             const data = doc.data();
-            if (Array.isArray(data.items)) {
-              items = data.items;
-            }
+            if (Array.isArray(data.items)) items = data.items;
             monthClosed = !!data.closed;
             renderItems();
             updateGrandTotal();
             updateRanking();
             updateCloseUI();
-          } else {
-            applyTemplateIfNeeded();
-          }
+          } else applyTemplateIfNeeded();
         }, (err) => {
           console.error("Firestore 監聽錯誤", err);
           applyTemplateIfNeeded();
         });
-      } else {
-        applyTemplateIfNeeded();
-      }
+      } else applyTemplateIfNeeded();
     }
 
-    
     function updateCloseUI() {
       const app = document.querySelector(".app");
       const btn = document.getElementById("closeBtn");
       const note = document.getElementById("closeNote");
-      if (!app || !btn || !note) return;
       if (monthClosed) {
         app.classList.add("closed-mode");
         btn.textContent = "🔓 解除關帳";
@@ -1657,22 +1087,16 @@ function ensureDailyArray(item) {
       }
       updateCloseUI();
 
-      // 僅同步關帳狀態到 Firestore（若可用）
       if (typeof db !== "undefined" && db) {
         const docId = "R" + currentYear + "_M" + currentMonth;
-        db.collection("consumablesMonths").doc(docId).set({
-          closed: monthClosed
-        }, { merge: true }).catch((err) => {
-          console.error("更新關帳狀態失敗", err);
-        });
+        db.collection("consumablesMonths").doc(docId).set({ closed: monthClosed }, { merge: true })
+          .catch((err) => console.error("更新關帳狀態失敗", err));
       }
     }
 
-function onYearMonthChange() {
-      const ySel = document.getElementById("yearSelect");
-      const mSel = document.getElementById("monthSelect");
-      const rocY = parseInt(ySel.value, 10);
-      const m = parseInt(mSel.value, 10);
+    function onYearMonthChange() {
+      const rocY = parseInt(document.getElementById("yearSelect").value, 10);
+      const m = parseInt(document.getElementById("monthSelect").value, 10);
       loadYearMonth(rocY, m, false);
     }
 
@@ -1680,19 +1104,11 @@ function onYearMonthChange() {
       document.getElementById("yearSelect").value = "114";
       document.getElementById("monthSelect").value = "11";
       loadYearMonth(114, 11, false);
-
-      const gallerySearch = document.getElementById("gallerySearch");
-      if (gallerySearch) {
-        gallerySearch.addEventListener("input", () => {
-          renderGallery();
-        });
-      }
-
+      document.getElementById("gallerySearch").addEventListener("input", renderGallery);
       updateCloseUI();
     });
   </script>
 
-<!-- Firebase CDN -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
