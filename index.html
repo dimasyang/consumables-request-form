@@ -404,6 +404,40 @@
     let rankingVisible = false;
     let unsubscribeRealtime = null;
     let monthClosed = false;
+    // ------- 照片穩定版（A方案）設定 -------
+    // 目標：免登入、照片上傳到 Firebase Storage，且不會因為刪除/重排品項造成覆蓋或對錯。
+    // 可依「辨識用途」調整畫質與檔案大小（越大越清楚，但上傳/儲存越吃流量）。
+    const PHOTO_MAX_WIDTH = 1200;
+    const PHOTO_MAX_HEIGHT = 1200;
+    const PHOTO_MAX_SIZE_KB = 350; // 建議 250~450KB（辨識用較清楚）
+    const PHOTO_MAX_RAW_MB = 8;    // 原始照片大小限制
+
+    function ensureItemId(item) {
+      if (!item) return "unknown";
+      if (!item.id || typeof item.id !== "string") {
+        // 優先用 crypto.randomUUID（現代瀏覽器支援），否則退回到時間戳+亂數
+        if (typeof crypto !== "undefined" && crypto.randomUUID) {
+          item.id = crypto.randomUUID();
+        } else {
+          item.id = "id_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+        }
+      }
+      return item.id;
+    }
+
+    // 將舊資料/模板中的 NaN 轉為 null（避免少數瀏覽器在輸入框顯示異常）
+    function sanitizeItem(item) {
+      if (!item || typeof item !== "object") return item;
+      const keys = ["category","supplier","name","spec","unit","usageType","note","photoUrl"];
+      keys.forEach(k => {
+        if (typeof item[k] === "number" && isNaN(item[k])) item[k] = null;
+      });
+      if (typeof item.unitPrice === "number" && isNaN(item.unitPrice)) item.unitPrice = null;
+      ensureItemId(item);
+      return item;
+    }
+
+
 
     function adYear(rocYear) { return rocYear + 1911; }
     function daysInMonth(rocYear, month) {
@@ -627,7 +661,7 @@
           const file = e.target.files[0];
           if (!file) return;
 
-          const maxRawSizeMB = 5;
+          const maxRawSizeMB = PHOTO_MAX_RAW_MB;
           if (file.size > maxRawSizeMB * 1024 * 1024) {
             alert("原始照片超過 " + maxRawSizeMB + "MB，請拍小一點再上傳。");
             e.target.value = "";
@@ -638,10 +672,11 @@
           statusDiv.classList.remove("photo-status-ok", "photo-status-warn");
           statusDiv.classList.add("photo-status-wait");
 
-          compressImage(file, 800, 800, 200, function (dataUrl, blob) {
+          compressImage(file, PHOTO_MAX_WIDTH, PHOTO_MAX_HEIGHT, PHOTO_MAX_SIZE_KB, function (dataUrl, blob) {
             if (typeof uploadPhotoToStorage === "function") {
               statusDiv.textContent = "上傳雲端中…";
-              const path = "consumables_photos/" + currentYear + "_" + currentMonth + "_" + realIdx + ".jpg";
+              const itemId = ensureItemId(item);
+              const path = "consumables_photos/R" + currentYear + "/M" + currentMonth + "/" + itemId + ".jpg";
               uploadPhotoToStorage(blob, path)
                 .then((url) => {
                   item.photoUrl = url;
@@ -877,13 +912,16 @@
 
     function addItem() {
       const DAYS = getDaysInCurrentMonth();
-      items.push({
+      const obj = {
         category: "", supplier: "", name: "", spec: "", unit: "",
         unitPrice: null, daily: Array(DAYS).fill(null),
         usageType: "", note: "",
         openingQty: null, closingQty: null,
-        photoUrl: null
-      });
+        photoUrl: null,
+        id: null
+      };
+      sanitizeItem(obj);
+      items.push(obj);
       filteredIndices = getFilteredIndicesByKeyword(document.getElementById("searchInput").value.trim());
       renderItems();
     }
@@ -991,20 +1029,24 @@
 
     function cloneTemplateForMonth() {
       const DAYS = getDaysInCurrentMonth();
-      return TEMPLATE_ITEMS.map(src => ({
-        category: src.category,
-        supplier: src.supplier,
-        name: src.name,
-        spec: src.spec,
-        unit: src.unit,
-        unitPrice: src.unitPrice,
-        daily: Array(DAYS).fill(null),
-        usageType: src.usageType,
-        note: src.note,
-        openingQty: src.openingQty || null,
-        closingQty: src.closingQty || null,
-        photoUrl: src.photoUrl || null
-      }));
+      return TEMPLATE_ITEMS.map(src => {
+        const obj = {
+          category: src.category,
+          supplier: src.supplier,
+          name: src.name,
+          spec: src.spec,
+          unit: src.unit,
+          unitPrice: src.unitPrice,
+          daily: Array(DAYS).fill(null),
+          usageType: src.usageType,
+          note: src.note,
+          openingQty: src.openingQty || null,
+          closingQty: src.closingQty || null,
+          photoUrl: src.photoUrl || null,
+          id: src.id || null
+        };
+        return sanitizeItem(obj);
+      });
     }
 
     function loadYearMonth(rocYear, month, forceReset) {
@@ -1023,7 +1065,8 @@
       if (!forceReset) {
         const saved = localStorage.getItem(storageKeyForCurrent());
         if (saved) {
-          try { items = JSON.parse(saved); hasLocal = true; renderItems(); }
+          try { items = JSON.parse(saved);
+            if (Array.isArray(items)) items = items.map(sanitizeItem); hasLocal = true; renderItems(); }
           catch (e) { console.warn("解析已存資料失敗，改用預設：", e); }
         }
       }
@@ -1047,6 +1090,7 @@
           if (doc.exists) {
             const data = doc.data();
             if (Array.isArray(data.items)) items = data.items;
+              if (Array.isArray(items)) items = items.map(sanitizeItem);
             monthClosed = !!data.closed;
             renderItems();
             updateGrandTotal();
