@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>南海豐｜包裝耗材領用（極簡手機版）</title>
+  <title>南海豐｜包裝耗材領用（極簡手機版｜入/出庫）</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <style>
@@ -224,8 +224,9 @@
   }
   textarea:focus { border-color: #0f766e; background: #ffffff; box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.22); }
   .days { margin-top: 6px; border-top: 1px dashed #e5e7eb; padding-top: 6px; }
-  .days-title { font-size: 0.75rem; color: #4b5563; margin-bottom: 4px; font-weight: 500; }
-  .days-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 4px; }
+  .days-title { font-size: 0.75rem; color: #4b5563; margin-bottom: 4px; font-weight: 500; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .days-hint { font-size: 0.72rem; color:#64748b; }
+  .days-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 4px; }
   .day-cell {
     display: flex;
     flex-direction: column;
@@ -234,8 +235,9 @@
     border-radius: 8px;
     background: #f9fafb;
     border: 1px solid #e5e7eb;
+    gap: 3px;
   }
-  .day-cell span { color: #4b5563; margin-bottom: 2px; }
+  .day-cell span { color: #4b5563; margin-bottom: 1px; }
   .day-cell input {
     padding: 3px 4px;
     border-radius: 6px;
@@ -302,8 +304,8 @@
 <body>
   <div class="top-bar"></div>
   <div class="app">
-    <h1>南海豐 包裝耗材領用（極簡手機版）</h1>
-    <div class="sub">多年份 · 單機使用 · 資料保存在瀏覽器（localStorage），適合現場用手機紀錄。</div>
+    <h1>南海豐 包裝耗材領用（極簡手機版｜入/出庫）</h1>
+    <div class="sub">多年份 · 單機使用 · 資料保存在瀏覽器（localStorage）＋可同步 Firestore；每日同時記「入庫/出庫」，月底盤點更準。</div>
     <div id="closeNote" class="info"></div>
 
     <div class="row">
@@ -344,7 +346,7 @@
 
     <div class="summary">
       <div>📅 本月天數：<span id="daysInfo">30 天</span> <span id="dayFilterInfo"></span></div>
-      <div>💰 本月累計領用金額：<strong id="grandTotal">0</strong> 元</div>
+      <div>💰 本月累計出庫金額（以單價×出庫量）：<strong id="grandTotal">0</strong> 元</div>
       <div>📦 品項數量：<span id="itemCount">0</span> 個</div>
     </div>
 
@@ -360,11 +362,11 @@
     </div>
 
     <div id="rankingSection" class="ranking-section">
-      <div>📊 本月用量排行（依總用量，由大到小）</div>
+      <div>📊 本月出庫用量排行（依出庫總量，由大到小）</div>
       <table>
         <thead>
           <tr>
-            <th>#</th><th>品項</th><th>品名</th><th>總用量</th><th>金額小計</th>
+            <th>#</th><th>品項</th><th>品名</th><th>出庫總量</th><th>出庫金額小計</th>
           </tr>
         </thead>
         <tbody id="rankingBody"></tbody>
@@ -388,7 +390,7 @@
   </div>
 
   <script>
-    // 注意：你的 TEMPLATE_ITEMS 裡原本有 NaN，JSON 會失敗；這裡把 NaN 先改成 null
+    // TEMPLATE_ITEMS 保留舊的 daily（舊版領用），新版本會在 ensureDailyIOArrays 自動搬到 dailyOut
     const TEMPLATE_ITEMS = [
       {"category":"真空袋","supplier":"包裝工場","name":"食品級真空包裝袋","spec":"(1.)NY2030\n20 x 30 cm+厚0.09mm","unit":"100入/包","unitPrice":240.0,"daily":Array(31).fill(null),"usageType":"丸、魚","note":"包裝工場\n0918-199246\n0958-199246\n0956-199246\n\nLINE：包裝工場"},
       {"category":null,"supplier":null,"name":null,"spec":"(2.)NY1737\n17 x 37 cm+厚0.08mm","unit":null,"unitPrice":1.9,"daily":Array(31).fill(null),"usageType":"鮭","note":null},
@@ -404,18 +406,16 @@
     let rankingVisible = false;
     let unsubscribeRealtime = null;
     let monthClosed = false;
+
     // ------- 照片穩定版（A方案）設定 -------
-    // 目標：免登入、照片上傳到 Firebase Storage，且不會因為刪除/重排品項造成覆蓋或對錯。
-    // 可依「辨識用途」調整畫質與檔案大小（越大越清楚，但上傳/儲存越吃流量）。
     const PHOTO_MAX_WIDTH = 1200;
     const PHOTO_MAX_HEIGHT = 1200;
-    const PHOTO_MAX_SIZE_KB = 350; // 建議 250~450KB（辨識用較清楚）
-    const PHOTO_MAX_RAW_MB = 8;    // 原始照片大小限制
+    const PHOTO_MAX_SIZE_KB = 350;
+    const PHOTO_MAX_RAW_MB = 8;
 
     function ensureItemId(item) {
       if (!item) return "unknown";
       if (!item.id || typeof item.id !== "string") {
-        // 優先用 crypto.randomUUID（現代瀏覽器支援），否則退回到時間戳+亂數
         if (typeof crypto !== "undefined" && crypto.randomUUID) {
           item.id = crypto.randomUUID();
         } else {
@@ -425,7 +425,6 @@
       return item.id;
     }
 
-    // 將舊資料/模板中的 NaN 轉為 null（避免少數瀏覽器在輸入框顯示異常）
     function sanitizeItem(item) {
       if (!item || typeof item !== "object") return item;
       const keys = ["category","supplier","name","spec","unit","usageType","note","photoUrl"];
@@ -437,18 +436,139 @@
       return item;
     }
 
-
-
     function adYear(rocYear) { return rocYear + 1911; }
     function daysInMonth(rocYear, month) {
       const y = adYear(rocYear);
       return new Date(y, month, 0).getDate();
     }
     function getDaysInCurrentMonth() { return daysInMonth(currentYear, currentMonth); }
-    function storageKeyForCurrent() { return "nhf_packing_R" + currentYear + "_M" + currentMonth; }
+    function storageKeyForCurrent() { return "nhf_packing_inout_R" + currentYear + "_M" + currentMonth; }
     function formatMoney(num) {
       if (num == null || isNaN(num)) return "0";
       return Math.round(num).toLocaleString("zh-TW");
+    }
+
+    // -------- 入/出庫每日陣列：相容舊資料 daily -> dailyOut --------
+    function ensureDailyIOArrays(item) {
+      const DAYS = getDaysInCurrentMonth();
+
+      if (Array.isArray(item.daily) && !Array.isArray(item.dailyOut)) {
+        item.dailyOut = item.daily.slice(0, DAYS);
+      }
+      if (!Array.isArray(item.dailyIn)) item.dailyIn = Array(DAYS).fill(null);
+      if (!Array.isArray(item.dailyOut)) item.dailyOut = Array(DAYS).fill(null);
+
+      if (item.dailyIn.length < DAYS) item.dailyIn = item.dailyIn.concat(Array(DAYS - item.dailyIn.length).fill(null));
+      if (item.dailyIn.length > DAYS) item.dailyIn = item.dailyIn.slice(0, DAYS);
+
+      if (item.dailyOut.length < DAYS) item.dailyOut = item.dailyOut.concat(Array(DAYS - item.dailyOut.length).fill(null));
+      if (item.dailyOut.length > DAYS) item.dailyOut = item.dailyOut.slice(0, DAYS);
+    }
+
+    function sumArrayNumeric(arr) {
+      return (arr || []).reduce((s, v) => s + (isNaN(parseFloat(v)) ? 0 : parseFloat(v)), 0);
+    }
+
+    function getItemTotals(item) {
+      ensureDailyIOArrays(item);
+      const inQty = sumArrayNumeric(item.dailyIn);
+      const outQty = sumArrayNumeric(item.dailyOut);
+      return { inQty, outQty, netQty: inQty - outQty };
+    }
+
+    function calcTotal(item) {
+      const price = parseFloat(item.unitPrice || 0) || 0;
+      const { outQty } = getItemTotals(item);
+      return price * outQty; // 金額以出庫（領用）計
+    }
+
+    function getFilteredIndicesByKeyword(keyword) {
+      if (!keyword) return [];
+      const kw = keyword.toLowerCase();
+      const res = [];
+      items.forEach((item, idx) => {
+        const fields = [item.category||"", item.name||"", item.supplier||"", item.spec||"", item.usageType||""].join(" ").toLowerCase();
+        if (fields.includes(kw)) res.push(idx);
+      });
+      return res;
+    }
+
+    function updateGrandTotal() {
+      let grand = 0;
+      const indices = filteredIndices.length ? filteredIndices : items.map((_, i) => i);
+      indices.forEach(idx => { grand += calcTotal(items[idx]); });
+      document.getElementById("grandTotal").textContent = formatMoney(grand);
+    }
+
+    function updateRanking() {
+      const tbody = document.getElementById("rankingBody");
+      tbody.innerHTML = "";
+      if (!rankingVisible) return;
+
+      const stats = items.map((item, idx) => {
+        const { outQty } = getItemTotals(item);
+        return ({
+          index: idx,
+          category: item.category || "",
+          name: item.name || "",
+          qty: outQty,
+          amt: calcTotal(item)
+        });
+      });
+      stats.sort((a, b) => (b.qty !== a.qty ? b.qty - a.qty : b.amt - a.amt));
+      stats.slice(0, 20).forEach((s, i) => {
+        const tr = document.createElement("tr");
+        [""+(i+1), s.category, s.name, (s.qty||""), (s.amt ? formatMoney(s.amt) : "")].forEach(val=>{
+          const td=document.createElement("td"); td.textContent=val; tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    // -------- 快速今天入/出庫 --------
+    function isTodayInSelectedMonth() {
+      const today = new Date();
+      const adY = adYear(currentYear);
+      return today.getFullYear() === adY && (today.getMonth() + 1) === currentMonth;
+    }
+    function getTodayIndexOrNull() {
+      const today = new Date();
+      const day = today.getDate();
+      const DAYS = getDaysInCurrentMonth();
+      if (day < 1 || day > DAYS) return null;
+      return day - 1;
+    }
+    function quickAddForToday(item, mode, totalSpan, refreshStockInfo) {
+      ensureDailyIOArrays(item);
+
+      if (!isTodayInSelectedMonth()) {
+        const ok = confirm("⚠️ 今天不是目前選定的年月（" + currentYear + "/" + currentMonth + "）。仍要加到「今天」欄位嗎？");
+        if (!ok) return;
+      }
+      const idx = getTodayIndexOrNull();
+      if (idx == null) { alert("今天日期超出本月天數，無法寫入。"); return; }
+
+      const label = (mode === "in") ? "入庫" : "出庫";
+      const input = prompt("＋今天" + label + "：請輸入數量（可輸入小數）", "1");
+      if (input == null) return;
+
+      const addQty = parseFloat(String(input).trim());
+      if (isNaN(addQty)) { alert("輸入不是數字，已取消。"); return; }
+
+      if (mode === "in") {
+        const cur = parseFloat(item.dailyIn[idx]) || 0;
+        item.dailyIn[idx] = cur + addQty;
+      } else {
+        const cur = parseFloat(item.dailyOut[idx]) || 0;
+        item.dailyOut[idx] = cur + addQty;
+      }
+
+      if (totalSpan) totalSpan.textContent = formatMoney(calcTotal(item));
+      updateGrandTotal();
+      updateRanking();
+      if (typeof refreshStockInfo === "function") refreshStockInfo();
+
+      renderItems(); // 讓今天欄位立即可見
     }
 
     function compressImage(file, maxWidth, maxHeight, maxSizeKB, callback) {
@@ -510,7 +630,7 @@
       const grid = document.getElementById("galleryGrid");
       const kw = (document.getElementById("gallerySearch").value || "").toLowerCase().trim();
       grid.innerHTML = "";
-      items.forEach((item, idx) => {
+      items.forEach((item) => {
         if (!item || !item.photoUrl) return;
         const fields = [item.category||"", item.name||"", item.supplier||"", item.usageType||"", item.spec||""].join(" ").toLowerCase();
         if (kw && !fields.includes(kw)) return;
@@ -533,64 +653,6 @@
       });
     }
 
-    function ensureDailyArray(item) {
-      const DAYS = getDaysInCurrentMonth();
-      if (!Array.isArray(item.daily)) item.daily = Array(DAYS).fill(null);
-      else if (item.daily.length < DAYS) item.daily = item.daily.concat(Array(DAYS - item.daily.length).fill(null));
-      else if (item.daily.length > DAYS) item.daily = item.daily.slice(0, DAYS);
-    }
-
-    function getItemTotalUsage(item) {
-      ensureDailyArray(item);
-      return item.daily.reduce((s, v) => s + (isNaN(parseFloat(v)) ? 0 : parseFloat(v)), 0);
-    }
-
-    function calcTotal(item) {
-      ensureDailyArray(item);
-      const price = parseFloat(item.unitPrice || 0) || 0;
-      return price * getItemTotalUsage(item);
-    }
-
-    function getFilteredIndicesByKeyword(keyword) {
-      if (!keyword) return [];
-      const kw = keyword.toLowerCase();
-      const res = [];
-      items.forEach((item, idx) => {
-        const fields = [item.category||"", item.name||"", item.supplier||"", item.spec||"", item.usageType||""].join(" ").toLowerCase();
-        if (fields.includes(kw)) res.push(idx);
-      });
-      return res;
-    }
-
-    function updateGrandTotal() {
-      let grand = 0;
-      const indices = filteredIndices.length ? filteredIndices : items.map((_, i) => i);
-      indices.forEach(idx => { grand += calcTotal(items[idx]); });
-      document.getElementById("grandTotal").textContent = formatMoney(grand);
-    }
-
-    function updateRanking() {
-      const tbody = document.getElementById("rankingBody");
-      tbody.innerHTML = "";
-      if (!rankingVisible) return;
-
-      const stats = items.map((item, idx) => ({
-        index: idx,
-        category: item.category || "",
-        name: item.name || "",
-        qty: getItemTotalUsage(item),
-        amt: calcTotal(item)
-      }));
-      stats.sort((a, b) => (b.qty !== a.qty ? b.qty - a.qty : b.amt - a.amt));
-      stats.slice(0, 20).forEach((s, i) => {
-        const tr = document.createElement("tr");
-        [""+(i+1), s.category, s.name, (s.qty||""), (s.amt ? formatMoney(s.amt) : "")].forEach(val=>{
-          const td=document.createElement("td"); td.textContent=val; tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      });
-    }
-
     function renderItems() {
       const container = document.getElementById("itemsContainer");
       container.innerHTML = "";
@@ -601,7 +663,7 @@
 
       indices.forEach((realIdx) => {
         const item = items[realIdx];
-        ensureDailyArray(item);
+        ensureDailyIOArrays(item);
 
         const card = document.createElement("div");
         card.className = "item-card";
@@ -631,6 +693,7 @@
 
         card.appendChild(header);
 
+        // --- 照片 ---
         const photoLine = document.createElement("div");
         photoLine.className = "line photo-line";
         const photoLabel = document.createElement("label");
@@ -737,6 +800,7 @@
         photoLine.appendChild(photoWrapper);
         card.appendChild(photoLine);
 
+        // --- 基本欄位 ---
         const line1 = document.createElement("div");
         line1.className = "line";
         line1.innerHTML = '<label>廠商</label><input type="text"><label>單位</label><input type="text"><label>單價</label><input type="number">';
@@ -769,6 +833,7 @@
         noteInput.onchange = e => item.note = e.target.value;
         card.appendChild(line3);
 
+        // --- 庫存 ---
         const stockLine = document.createElement("div");
         stockLine.className = "line";
         const stockLabel = document.createElement("label");
@@ -802,15 +867,15 @@
 
         function refreshStockInfo() {
           const opening = openingInput.value.trim() === "" ? 0 : (parseFloat(openingInput.value) || 0);
-          const used = getItemTotalUsage(item);
-          const theoreticalEnd = opening - used;
+          const { inQty, outQty } = getItemTotals(item);
+          const theoreticalEnd = opening + inQty - outQty;
 
           if (closingInput.value.trim() === "") {
-            stockInfo.textContent = "理論結存（期初－本月領用）：" + theoreticalEnd + "（尚未輸入盤點量）";
+            stockInfo.textContent = "本月入庫：" + inQty + "｜本月出庫：" + outQty + "｜理論結存（期初＋入－出）：" + theoreticalEnd + "（尚未輸入盤點量）";
           } else {
             const closing = parseFloat(closingInput.value) || 0;
             const diff = closing - theoreticalEnd;
-            stockInfo.textContent = "理論結存：" + theoreticalEnd + "｜盤點：" + closing + "｜差異：" + diff;
+            stockInfo.textContent = "本月入庫：" + inQty + "｜本月出庫：" + outQty + "｜理論結存：" + theoreticalEnd + "｜盤點：" + closing + "｜差異：" + diff;
           }
         }
 
@@ -821,14 +886,38 @@
         stockRow.appendChild(closingInput);
         stockWrapper.appendChild(stockRow);
         stockWrapper.appendChild(stockInfo);
+
+        // 快速今天入/出庫按鈕
+        const footerQuick = document.createElement("div");
+        footerQuick.style.display = "flex";
+        footerQuick.style.flexWrap = "wrap";
+        footerQuick.style.gap = "6px";
+
+        const btnIn = document.createElement("button");
+        btnIn.type = "button";
+        btnIn.textContent = "＋今天入庫";
+        const btnOut = document.createElement("button");
+        btnOut.type = "button";
+        btnOut.textContent = "＋今天出庫";
+        const btnClear = document.createElement("button");
+        btnClear.type = "button";
+        btnClear.className = "danger";
+        btnClear.textContent = "清空今天";
+
+        footerQuick.appendChild(btnIn);
+        footerQuick.appendChild(btnOut);
+        footerQuick.appendChild(btnClear);
+        stockWrapper.appendChild(footerQuick);
+
         stockLine.appendChild(stockWrapper);
         card.appendChild(stockLine);
 
+        // --- footer 小計 ---
         const footer = document.createElement("div");
         footer.className = "item-footer";
 
         const totalLabel = document.createElement("div");
-        totalLabel.innerHTML = '小計金額：<strong><span></span></strong> 元';
+        totalLabel.innerHTML = '出庫金額小計：<strong><span></span></strong> 元';
         const totalSpan = totalLabel.querySelector("span");
         totalSpan.textContent = formatMoney(calcTotal(item));
         footer.appendChild(totalLabel);
@@ -842,13 +931,31 @@
           refreshStockInfo();
         };
 
+        // 綁定快速按鈕（要等 totalSpan / refreshStockInfo 已存在）
+        btnIn.onclick = () => quickAddForToday(item, "in", totalSpan, refreshStockInfo);
+        btnOut.onclick = () => quickAddForToday(item, "out", totalSpan, refreshStockInfo);
+        btnClear.onclick = () => {
+          ensureDailyIOArrays(item);
+          const idx = getTodayIndexOrNull();
+          if (idx == null) { alert("今天日期超出本月天數。"); return; }
+          if (!confirm("要清空今天的入/出數量嗎？")) return;
+          item.dailyIn[idx] = null;
+          item.dailyOut[idx] = null;
+          totalSpan.textContent = formatMoney(calcTotal(item));
+          updateGrandTotal();
+          updateRanking();
+          refreshStockInfo();
+          renderItems();
+        };
+
         refreshStockInfo();
 
+        // --- 每日入/出 ---
         const daysDiv = document.createElement("div");
         daysDiv.className = "days";
         const title = document.createElement("div");
         title.className = "days-title";
-        title.textContent = "每日領用數量（" + currentMonth + " 月）";
+        title.innerHTML = "每日入/出庫數量（" + currentMonth + " 月） <span class='days-hint'>（上：入庫｜下：出庫）</span>";
         daysDiv.appendChild(title);
 
         const grid = document.createElement("div");
@@ -865,19 +972,34 @@
           lbl.textContent = currentMonth + "/" + dayNumber;
           cell.appendChild(lbl);
 
-          const inp = document.createElement("input");
-          inp.type = "number";
-          inp.placeholder = "0";
-          inp.value = item.daily[d] == null ? "" : item.daily[d];
-          inp.onchange = (e) => {
+          const inInp = document.createElement("input");
+          inInp.type = "number";
+          inInp.placeholder = "入";
+          inInp.value = item.dailyIn[d] == null ? "" : item.dailyIn[d];
+          inInp.onchange = (e) => {
             const v = e.target.value.trim();
-            item.daily[d] = v === "" ? null : parseFloat(v);
+            item.dailyIn[d] = v === "" ? null : parseFloat(v);
             totalSpan.textContent = formatMoney(calcTotal(item));
             updateGrandTotal();
             updateRanking();
             refreshStockInfo();
           };
-          cell.appendChild(inp);
+          cell.appendChild(inInp);
+
+          const outInp = document.createElement("input");
+          outInp.type = "number";
+          outInp.placeholder = "出";
+          outInp.value = item.dailyOut[d] == null ? "" : item.dailyOut[d];
+          outInp.onchange = (e) => {
+            const v = e.target.value.trim();
+            item.dailyOut[d] = v === "" ? null : parseFloat(v);
+            totalSpan.textContent = formatMoney(calcTotal(item));
+            updateGrandTotal();
+            updateRanking();
+            refreshStockInfo();
+          };
+          cell.appendChild(outInp);
+
           grid.appendChild(cell);
         }
         daysDiv.appendChild(grid);
@@ -914,7 +1036,9 @@
       const DAYS = getDaysInCurrentMonth();
       const obj = {
         category: "", supplier: "", name: "", spec: "", unit: "",
-        unitPrice: null, daily: Array(DAYS).fill(null),
+        unitPrice: null,
+        dailyIn: Array(DAYS).fill(null),
+        dailyOut: Array(DAYS).fill(null),
         usageType: "", note: "",
         openingQty: null, closingQty: null,
         photoUrl: null,
@@ -986,12 +1110,15 @@
     function exportCsv() {
       const DAYS = getDaysInCurrentMonth();
       const header = ["品項","廠商","品名","型號/規格","包裝/單位","單價"];
-      for (let d = 1; d <= DAYS; d++) header.push(currentMonth + "/" + d);
-      header.push("金額小計","適用種類","備註");
+      for (let d = 1; d <= DAYS; d++) {
+        header.push(currentMonth + "/" + d + " 入");
+        header.push(currentMonth + "/" + d + " 出");
+      }
+      header.push("本月入庫合計","本月出庫合計","出庫金額小計","適用種類","備註");
 
       const rows = [header];
       items.forEach((item) => {
-        ensureDailyArray(item);
+        ensureDailyIOArrays(item);
         const row = [
           item.category || "",
           item.supplier || "",
@@ -1000,7 +1127,13 @@
           item.unit || "",
           item.unitPrice == null ? "" : item.unitPrice
         ];
-        for (let d = 0; d < DAYS; d++) row.push(item.daily[d] == null ? "" : item.daily[d]);
+        for (let d = 0; d < DAYS; d++) {
+          row.push(item.dailyIn[d] == null ? "" : item.dailyIn[d]);
+          row.push(item.dailyOut[d] == null ? "" : item.dailyOut[d]);
+        }
+        const { inQty, outQty } = getItemTotals(item);
+        row.push(inQty);
+        row.push(outQty);
         row.push(calcTotal(item));
         row.push(item.usageType || "");
         row.push((item.note || "").replace(/\s+/g, " "));
@@ -1020,7 +1153,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "耗材領用_" + currentYear + "_" + currentMonth + ".csv";
+      a.download = "耗材入出庫_" + currentYear + "_" + currentMonth + ".csv";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1037,7 +1170,9 @@
           spec: src.spec,
           unit: src.unit,
           unitPrice: src.unitPrice,
-          daily: Array(DAYS).fill(null),
+          daily: Array(DAYS).fill(null), // 仍保留舊欄位供相容
+          dailyIn: Array(DAYS).fill(null),
+          dailyOut: Array(DAYS).fill(null),
           usageType: src.usageType,
           note: src.note,
           openingQty: src.openingQty || null,
@@ -1045,7 +1180,9 @@
           photoUrl: src.photoUrl || null,
           id: src.id || null
         };
-        return sanitizeItem(obj);
+        const clean = sanitizeItem(obj);
+        ensureDailyIOArrays(clean);
+        return clean;
       });
     }
 
@@ -1065,9 +1202,17 @@
       if (!forceReset) {
         const saved = localStorage.getItem(storageKeyForCurrent());
         if (saved) {
-          try { items = JSON.parse(saved);
-            if (Array.isArray(items)) items = items.map(sanitizeItem); hasLocal = true; renderItems(); }
-          catch (e) { console.warn("解析已存資料失敗，改用預設：", e); }
+          try {
+            items = JSON.parse(saved);
+            if (Array.isArray(items)) {
+              items = items.map(sanitizeItem);
+              items.forEach(it => ensureDailyIOArrays(it));
+              hasLocal = true;
+              renderItems();
+            }
+          } catch (e) {
+            console.warn("解析已存資料失敗，改用預設：", e);
+          }
         }
       }
 
@@ -1075,8 +1220,11 @@
         if (!hasLocal && (!items || !items.length)) {
           if (currentYear === 114 && currentMonth === 11) {
             items = JSON.parse(JSON.stringify(TEMPLATE_ITEMS));
-            items.forEach(it => ensureDailyArray(it));
-          } else items = cloneTemplateForMonth();
+            items = items.map(sanitizeItem);
+            items.forEach(it => ensureDailyIOArrays(it));
+          } else {
+            items = cloneTemplateForMonth();
+          }
           monthClosed = false;
           renderItems();
           updateCloseUI();
@@ -1090,7 +1238,10 @@
           if (doc.exists) {
             const data = doc.data();
             if (Array.isArray(data.items)) items = data.items;
-              if (Array.isArray(items)) items = items.map(sanitizeItem);
+            if (Array.isArray(items)) {
+              items = items.map(sanitizeItem);
+              items.forEach(it => ensureDailyIOArrays(it));
+            }
             monthClosed = !!data.closed;
             renderItems();
             updateGrandTotal();
@@ -1117,7 +1268,7 @@
         app.classList.remove("closed-mode");
         btn.textContent = "🔒 本月關帳";
         btn.classList.remove("danger");
-        note.textContent = "提示：先輸入期初庫存，月底填寫盤點量，確認無誤後可按「本月關帳」鎖定資料。";
+        note.textContent = "提示：先輸入期初庫存；每日記入/出庫；月底填寫盤點量，確認無誤後可按「本月關帳」鎖定資料。";
       }
     }
 
