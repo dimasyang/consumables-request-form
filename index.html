@@ -298,6 +298,10 @@
   .app.closed-mode .item-card textarea,
   .app.closed-mode .item-card button { pointer-events: none; opacity: 0.6; }
   .app.closed-mode .item-card .photo-preview { pointer-events: none; }
+  /* 修正：關帳模式仍允許選照片（避免現場無法補拍辨識照） */
+  .app.closed-mode .item-card input[type="file"] { pointer-events: auto; opacity: 1; }
+  .app.closed-mode .item-card .photo-preview { pointer-events: auto; opacity: 1; }
+
   #closeNote { margin-top: 4px; }
 </style>
 </head>
@@ -341,6 +345,7 @@
       <button onclick="showAllDays()">🗓 顯示全部日期</button>
       <button class="danger" onclick="clearData()">🧹 清除本月暫存</button>
       <button class="gallery-toggle-btn" onclick="openGallery()">📷 照片總覽</button>
+      <button id="photoModeBtn" onclick="togglePhotoMode()">☁️ 照片：雲端</button>
       <button id="closeBtn" onclick="toggleCloseMonth()">🔒 本月關帳</button>
     </div>
 
@@ -408,10 +413,10 @@
     let monthClosed = false;
 
     // ------- 照片穩定版（A方案）設定 -------
-    const PHOTO_MAX_WIDTH = 1200;
-    const PHOTO_MAX_HEIGHT = 1200;
-    const PHOTO_MAX_SIZE_KB = 350;
-    const PHOTO_MAX_RAW_MB = 8;
+    const PHOTO_MAX_WIDTH = 900;
+    const PHOTO_MAX_HEIGHT = 900;
+    const PHOTO_MAX_SIZE_KB = 220; // 中：建議（更省流量）
+    const PHOTO_MAX_RAW_MB = 5;
 
     function ensureItemId(item) {
       if (!item) return "unknown";
@@ -569,6 +574,33 @@
       if (typeof refreshStockInfo === "function") refreshStockInfo();
 
       renderItems(); // 讓今天欄位立即可見
+    }
+
+    // -------- 照片儲存模式（雲端 / 本機）--------
+    // 目的：若只需要現場辨識樣式，可切到「本機」避免上傳麻煩、也避免占用雲端。
+    // 注意：本機模式下，photoUrl 會是 dataURL（存在 localStorage）；同步 Firestore 時會自動略過 dataURL。
+    let photoMode = localStorage.getItem("nhf_consumables_photo_mode") || "cloud"; // "cloud" | "local"
+    function isDataUrl(u) { return typeof u === "string" && u.startsWith("data:image"); }
+
+    function updatePhotoModeUI() {
+      const btn = document.getElementById("photoModeBtn");
+      if (!btn) return;
+      if (photoMode === "local") {
+        btn.textContent = "📵 照片：本機";
+        btn.classList.add("danger");
+      } else {
+        btn.textContent = "☁️ 照片：雲端";
+        btn.classList.remove("danger");
+      }
+    }
+
+    function togglePhotoMode() {
+      photoMode = (photoMode === "cloud") ? "local" : "cloud";
+      localStorage.setItem("nhf_consumables_photo_mode", photoMode);
+      updatePhotoModeUI();
+      alert(photoMode === "local"
+        ? "已切換：照片只存本機（不會上傳雲端）。\n提示：若要多人共用照片，請切回「雲端」。"
+        : "已切換：照片上傳雲端（Storage），並在 Firestore 存連結。");
     }
 
     function compressImage(file, maxWidth, maxHeight, maxSizeKB, callback) {
@@ -736,7 +768,7 @@
           statusDiv.classList.add("photo-status-wait");
 
           compressImage(file, PHOTO_MAX_WIDTH, PHOTO_MAX_HEIGHT, PHOTO_MAX_SIZE_KB, function (dataUrl, blob) {
-            if (typeof uploadPhotoToStorage === "function") {
+            if (photoMode === "cloud" && typeof uploadPhotoToStorage === "function") {
               statusDiv.textContent = "上傳雲端中…";
               const itemId = ensureItemId(item);
               const path = "consumables_photos/R" + currentYear + "/M" + currentMonth + "/" + itemId + ".jpg";
@@ -765,9 +797,9 @@
               item.photoUrl = dataUrl;
               img.src = dataUrl;
               img.style.display = "block";
-              statusDiv.textContent = "⚠ 僅儲存在本機（未連線雲端）";
-              statusDiv.classList.remove("photo-status-wait", "photo-status-ok");
-              statusDiv.classList.add("photo-status-warn");
+              statusDiv.textContent = "✅ 已存本機（不占雲端）";
+              statusDiv.classList.remove("photo-status-wait", "photo-status-warn");
+              statusDiv.classList.add("photo-status-ok");
               renderGallery();
             }
           });
@@ -794,7 +826,7 @@
 
         const photoNote = document.createElement("div");
         photoNote.className = "photo-note";
-        photoNote.textContent = "可用手機拍耗材外觀，照片會壓縮後上傳（或只存在本機），欄位僅存連結。";
+        photoNote.textContent = "可用手機拍耗材外觀：先壓縮再儲存。雲端模式→上傳 Storage；本機模式→只存手機不占雲端。";
         photoWrapper.appendChild(photoNote);
 
         photoLine.appendChild(photoWrapper);
@@ -1056,9 +1088,14 @@
 
       if (typeof db !== "undefined" && db) {
         const docId = "R" + currentYear + "_M" + currentMonth;
+        const cloudItems = items.map(it => {
+          const copy = JSON.parse(JSON.stringify(it));
+          if (isDataUrl(copy.photoUrl)) copy.photoUrl = null; // 避免把照片本體塞進 Firestore
+          return copy;
+        });
         db.collection("consumablesMonths").doc(docId).set({
           rocYear: currentYear, month: currentMonth,
-          items: items, closed: monthClosed,
+          items: cloudItems, closed: monthClosed,
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true }).then(() => {
           alert("已儲存 " + currentYear + "/" + currentMonth + " 的資料，並同步到雲端。");
@@ -1263,7 +1300,7 @@
         app.classList.add("closed-mode");
         btn.textContent = "🔓 解除關帳";
         btn.classList.add("danger");
-        note.textContent = "本月已關帳：耗材資料鎖定不可編輯，如需修改請先「解除關帳」。";
+        note.textContent = "本月已關帳：資料鎖定不可編輯（但仍可補拍/更換照片以利辨識）。若要改數量/單價請先「解除關帳」。";
       } else {
         app.classList.remove("closed-mode");
         btn.textContent = "🔒 本月關帳";
@@ -1301,6 +1338,7 @@
       loadYearMonth(114, 11, false);
       document.getElementById("gallerySearch").addEventListener("input", renderGallery);
       updateCloseUI();
+      updatePhotoModeUI();
     });
   </script>
 
